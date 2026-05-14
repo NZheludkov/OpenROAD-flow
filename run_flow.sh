@@ -4,7 +4,7 @@
 pdk_path=""
 rtl_dataset_path=""
 design=""
-output_dir="./output"
+output_dir=""
 verbose=0
 
 # Функция для вывода справки
@@ -80,6 +80,12 @@ if [[ -z "$design" ]]; then
     exit 1
 fi
 
+if [[ -z "$output_dir" ]]; then
+    echo "Ошибка: Не указан параметр --output_dir"
+    echo "Используйте --help для получения справки"
+    exit 1
+fi
+
 # Создание выходной директории
 mkdir -p "$output_dir"
 
@@ -103,6 +109,7 @@ fi
 export design
 export rtl_dataset_path
 export pdk_path
+export output_dir
 
 yosys ./flow_scripts/run_yosys.tcl
 
