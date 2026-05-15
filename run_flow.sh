@@ -87,7 +87,7 @@ if [[ -z "$output_dir" ]]; then
 fi
 
 # Создание выходной директории
-mkdir -p "$output_dir"
+#mkdir -p "$output_dir"
 
 # Вывод информации (если verbose режим)
 if [[ $verbose -eq 1 ]]; then
@@ -113,9 +113,9 @@ export output_dir
 
 yosys ./flow_scripts/run_yosys.tcl
 
-openroad -threads 4 -log ./log.txt \
--metrics metrics.txt \
-./flow_scripts/run_openroad.tcl -exit
+#openroad -threads 4 -log ./log.txt \
+#-metrics metrics.txt \
+#./flow_scripts/run_openroad.tcl -exit
 
 # Пример реальной работы (раскомментируйте и адаптируйте):
 # python3 your_script.py \
