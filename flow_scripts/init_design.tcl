@@ -17,7 +17,7 @@ read_liberty -corner view $liberty
 
 
 ##READ NETLIST
-read_verilog ${folder_name}/netlist_synt/${design}.v
+read_verilog ${folder_name}/synt/netlist/${design}.v
 link_design $design
 
 ##READ SDC

@@ -36,16 +36,16 @@ optimize_mirroring
 estimate_parasitics -placement
 
 ##REPORT TIMING AFTER POSTCTS
-exec mkdir -p $folder_name/timing_reports/postcts/
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/timing_reports/postcts/in2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/timing_reports/postcts/reg2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/timing_reports/postcts/reg2out_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/timing_reports/postcts/in2out_setup.txt
+exec mkdir -p $folder_name/postcts/timing_reports/
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/postcts/timing_reports/in2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/postcts/timing_reports/reg2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/postcts/timing_reports/reg2out_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/postcts/timing_reports/in2out_setup.txt
 
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/timing_reports/postcts/in2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/timing_reports/postcts/reg2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/timing_reports/postcts/reg2out_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/timing_reports/postcts/in2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/postcts/timing_reports/in2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/postcts/timing_reports/reg2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/postcts/timing_reports/reg2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/postcts/timing_reports/in2out_hold.txt
 
 ##WRITE ROUTE DATA
 exec mkdir -p $folder_name/postcts/def/

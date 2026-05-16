@@ -119,8 +119,8 @@ dfflibmap -liberty $liberty
 abc -liberty $liberty \
 -dont_use *clk* -dont_use *edfxtp* -dont_use *decap* -dont_use *dly*  -dont_use *diode*  -dont_use *ebuf*  -dont_use *ebuf*  -dont_use *ed*  -dont_use *ei*  -dont_use *lpflow*  -dont_use *probe*  -dont_use *sd*  -dont_use *tap*  -dont_use *bufbuf*  -dont_use *bufinv*  -dont_use *conb*  -dont_use *metal*   -dont_use *diode*  -dont_use *tap*
 
-exec mkdir -p ${folder_name}/netlist_synt_stat/
-tee -o ${folder_name}/netlist_synt_stat/stat.txt stat -top $design -liberty $liberty
+exec mkdir -p ${folder_name}/synt/netlist_synt_stat/
+tee -o ${folder_name}/synt/netlist_synt_stat/stat.txt stat -top $design -liberty $liberty
 
 ##Clean up the design (just the last step of opt)
 #clean
@@ -130,5 +130,5 @@ clean -purge
 ##autoname
 
 # write synthesized design
-exec mkdir -p ${folder_name}/netlist_synt/
-write_verilog -noattr -noexpr -nohex -nodec ${folder_name}/netlist_synt/${design}.v
+exec mkdir -p ${folder_name}/synt/netlist/
+write_verilog -noattr -noexpr -nohex -nodec ${folder_name}/synt/netlist/${design}.v

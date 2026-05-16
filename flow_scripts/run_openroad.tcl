@@ -10,7 +10,26 @@ if {[regexp {freepdk45} $pdk_path]} {
 	set cells_lef "${pdk_path}/libs/nangate45/lef/NangateOpenCellLibrary.macro.mod.lef"
 	set lef_list [concat $tech_lef $cells_lef]
     set liberty "$pdk_path/libs/nangate45/nldm/NangateOpenCellLibrary_typical.lib"
+    set core_site "FreePDK45_38x28_10R_NP_162NW_34O"
+    set tap_cell "TAPCELL_X1"
+    set tap_cell_distance "120"
     set techmap_verilog_files [glob $pdk_path/libs/nangate45/techmap/yosys/*]
+    set bottom_routing_metal "metal1"
+    set top_routing_metal "metal10"
+    set pins_hor_layers "metal3 metal5"
+    set pins_ver_layers "metal2 metal4"
+    set wire_rc_metal "metal3"
+    set tiehi_cell "LOGIC1_X1"
+    set tielo_cell "LOGIC0_X1"
+    set tiehi_cell_pin "Z"
+    set tielo_cell_pin "Z"
+    set filler_cells "FILLCELL_X1 FILLCELL_X2 FILLCELL_X4 FILLCELL_X8 FILLCELL_X16 FILLCELL_X32"
+    set dont_use_cells "ANTENNA_X1 FILL* LOGIC* TAPCELL_X1 TBUF* TINV* TLAT*"
+    set max_slew_cts "0.5"
+    set max_cap_cts "0.3"
+    set cts_root_buf "CLKBUF_X3"
+    set cts_buf_list "CLKBUF_X1 CLKBUF_X2 CLKBUF_X3"
+    set process_node "45"
     set pdk_name "freepdk45"
 }
 
@@ -55,9 +74,6 @@ source ./flow_scripts/create_floorplan.tcl
 #prects 
 source ./flow_scripts/prects.tcl
 
-#extract net load features
-#source ./flow_scripts/extract_net_load_feats.tcl
-
 #cts 
 source ./flow_scripts/cts.tcl
 
@@ -66,12 +82,4 @@ source ./flow_scripts/postcts.tcl
 
 #route 
 source ./flow_scripts/route.tcl
-
-#extract net load labels
-#source ./flow_scripts/extract_net_load_labels.tcl
-
-#dataset 
-#source ./flow_scripts/create_dataset.tcl
-
-
 
