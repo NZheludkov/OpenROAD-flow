@@ -36,27 +36,27 @@ optimize_mirroring
 estimate_parasitics -placement
 
 ##REPORT TIMING AFTER POSTCTS
-exec mkdir -p ./timing_reports/postcts/
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > ./timing_reports/postcts/in2reg_setup.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > ./timing_reports/postcts/reg2reg_setup.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > ./timing_reports/postcts/reg2out_setup.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > ./timing_reports/postcts/in2out_setup.txt
+exec mkdir -p $folder_name/timing_reports/postcts/
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/timing_reports/postcts/in2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/timing_reports/postcts/reg2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/timing_reports/postcts/reg2out_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/timing_reports/postcts/in2out_setup.txt
 
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > ./timing_reports/postcts/in2reg_hold.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > ./timing_reports/postcts/reg2reg_hold.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > ./timing_reports/postcts/reg2out_hold.txt
-report_checks -corner ss_1p60v_m40c -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > ./timing_reports/postcts/in2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/timing_reports/postcts/in2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/timing_reports/postcts/reg2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/timing_reports/postcts/reg2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/timing_reports/postcts/in2out_hold.txt
 
 ##WRITE ROUTE DATA
-exec mkdir -p ./postcts/def/
-exec mkdir -p ./postcts/netlist/
-exec mkdir -p ./postcts/sdc/
-exec mkdir -p ./postcts/sdf/
+exec mkdir -p $folder_name/postcts/def/
+exec mkdir -p $folder_name/postcts/netlist/
+exec mkdir -p $folder_name/postcts/sdc/
+exec mkdir -p $folder_name/postcts/sdf/
 
-write_def ./postcts/def/def.def
-write_verilog -remove_cells "*fill* *cap*" ./postcts/netlist/netlist.v
-write_sdc ./postcts/sdc/sdc.sdc
-write_sdf -digits 3 -corner ss_1p60v_m40c ./postcts/sdf/sdf.sdf
+write_def $folder_name/postcts/def/def.def
+write_verilog -remove_cells "*FILL* *TAPCELL_X1*" $folder_name/postcts/netlist/netlist.v
+write_sdc $folder_name/postcts/sdc/sdc.sdc
+write_sdf -digits 3 -corner view $folder_name/postcts/sdf/sdf.sdf
 
 ##END TIME
 set end_time [exec date +%s]

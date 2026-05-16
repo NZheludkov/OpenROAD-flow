@@ -111,11 +111,11 @@ export rtl_dataset_path
 export pdk_path
 export output_dir
 
+#run synt in yosys
 yosys ./flow_scripts/run_yosys.tcl
 
-#openroad -threads 4 -log ./log.txt \
-#-metrics metrics.txt \
-#./flow_scripts/run_openroad.tcl -exit
+#run topo in openroad
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
 
 # Пример реальной работы (раскомментируйте и адаптируйте):
 # python3 your_script.py \
@@ -124,5 +124,5 @@ yosys ./flow_scripts/run_yosys.tcl
 #     --output "$OUTPUT_DIR"
 
 # Завершение скрипта
-echo "Готово!"
+#echo "Готово!"
 exit 0
