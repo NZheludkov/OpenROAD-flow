@@ -7,6 +7,20 @@ design=""
 output_dir=""
 verbose=0
 
+# Flow params (empty => use PDK defaults)
+CLK_PERIOD=""
+IO_DELAY=""
+CU=""
+AR=""
+
+PDN_HWIDTH=""
+PDN_HSPACING=""
+PDN_HPITCH=""
+
+PDN_VWIDTH=""
+PDN_VSPACING=""
+PDN_VPITCH=""
+
 # Функция для вывода справки
 show_help() {
     cat << EOF
@@ -52,6 +66,55 @@ while [[ $# -gt 0 ]]; do
         --help|-h)
             show_help
             exit 0
+            ;;
+        --clk_period)
+            CLK_PERIOD="$2"
+            shift 2
+            ;;
+
+        --io_delay)
+            IO_DELAY="$2"
+            shift 2
+            ;;
+
+        --cu)
+            CU="$2"
+            shift 2
+            ;;
+
+        --ar)
+            AR="$2"
+            shift 2
+            ;;
+
+        --pdn_hwidth)
+            PDN_HWIDTH="$2"
+            shift 2
+            ;;
+
+        --pdn_hspacing)
+            PDN_HSPACING="$2"
+            shift 2
+            ;;
+
+        --pdn_hpitch)
+            PDN_HPITCH="$2"
+            shift 2
+            ;;
+
+        --pdn_vwidth)
+            PDN_VWIDTH="$2"
+            shift 2
+            ;;
+
+        --pdn_vspacing)
+            PDN_VSPACING="$2"
+            shift 2
+            ;;
+
+        --pdn_vpitch)
+            PDN_VPITCH="$2"
+            shift 2
             ;;
         *)
             echo "Ошибка: Неизвестная опция $1"
@@ -148,6 +211,7 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
 
     pdk_name="freepdk45"
+    echo aaaa
 
     # =========================
     # Default flow parameters
@@ -255,6 +319,12 @@ fi
 # Export all variables
 # =========================
 
+export pdk_path
+export rtl_dataset_path
+export design
+export output_dir
+export verbose
+
 export tech_lef
 export cells_lef
 export lef_list
@@ -314,6 +384,6 @@ export PDN_VPITCH
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
 
 exit 0

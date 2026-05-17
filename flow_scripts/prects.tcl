@@ -58,10 +58,10 @@ global_placement \
 -timing_driven \
 -routability_driven \
 -overflow "0.01" \
--density "0.5" \
+-density "0.75" \
 -init_density_penalty "1e-2" \
--pad_left "4" \
--pad_right "4" \
+-pad_left "2" \
+-pad_right "2" \
 -enable_routing_congestion \
 -routability_use_grt
 

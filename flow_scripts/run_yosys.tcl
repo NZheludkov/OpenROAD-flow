@@ -79,20 +79,6 @@ set rc_extract_file      $env(rc_extract_file)
 
 set pdk_name             $env(pdk_name)
 
-
-##PDK VARS
-#if {[regexp {freepdk45} $pdk_path]} {
-#    set liberty "$pdk_path/libs/nangate45/nldm/NangateOpenCellLibrary_typical.lib"
-#    set techmap_verilog_files [glob $pdk_path/libs/nangate45/techmap/yosys/*]
-#    set pdk_name "freepdk45"
-#}
-
-#if {[regexp {gf180} $pdk_path]} {
-#    set liberty "$pdk_path/libs/gf180mcu_fd_sc_mcu9t5v0/nldm/gf180mcu_fd_sc_mcu9t5v0__ss_125C_4v50.lib.gz"
-#    set techmap_verilog_files [glob $pdk_path/libs/gf180mcu_fd_sc_mcu9t5v0/techmap/yosys/*]
-#    set pdk_name "gf180"
-#}
-
 ##source config
 source $rtl_dataset_path/designs/${design}/config.tcl
 
