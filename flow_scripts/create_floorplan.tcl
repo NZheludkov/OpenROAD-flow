@@ -46,6 +46,17 @@ if {$pdk_name eq "freepdk45"} {
     add_pdn_connect -layers {metal9 metal10} -grid Core
 }
 
+if {$pdk_name eq "gf180"} {
+    add_pdn_stripe -layer MetalTop -width $PDN_VWIDTH -offset 8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer Metal5 -width $PDN_HWIDTH -offset 2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
+    add_pdn_stripe -layer Metal4 -width $PDN_VWIDTH -offset 2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer Metal1 -width 0.9 -grid Core -followpins
+
+    add_pdn_connect -layers {Metal1 Metal4} -grid Core
+    add_pdn_connect -layers {Metal4 Metal5} -grid Core
+    add_pdn_connect -layers {Metal5 MetalTop} -grid Core
+}
+
 #GENERATE POWER-GROUND GRID
 pdngen
 

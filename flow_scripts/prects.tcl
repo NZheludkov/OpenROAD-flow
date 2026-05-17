@@ -13,18 +13,39 @@ set_routing_layers -signal $bottom_routing_metal-$top_routing_metal -clock $bott
 set_wire_rc -clock -layer $wire_rc_metal
 set_wire_rc -signal -layer $wire_rc_metal
 
-# Liberty units are fF,kOhm
-set_layer_rc -corner view -layer metal1 -resistance 5.4286e-03 -capacitance 7.41819E-02
-set_layer_rc -corner view  -layer metal2 -resistance 3.5714e-03 -capacitance 6.74606E-02
-set_layer_rc -corner view  -layer metal3 -resistance 3.5714e-03 -capacitance 8.88758E-02
-set_layer_rc -corner view  -layer metal4 -resistance 1.5000e-03 -capacitance 1.07121E-01
-set_layer_rc -corner view  -layer metal5 -resistance 1.5000e-03 -capacitance 1.08964E-01
-set_layer_rc -corner view  -layer metal6 -resistance 1.5000e-03 -capacitance 1.02044E-01
-set_layer_rc -corner view  -layer metal7 -resistance 1.8750e-04 -capacitance 1.10436E-01
-set_layer_rc -corner view  -layer metal8 -resistance 1.8750e-04 -capacitance 9.69714E-02
-# No calibration data available for metal9 and metal10
-set_layer_rc -corner view  -layer metal9 -resistance 3.7500e-05 -capacitance 3.6864e-02
-set_layer_rc -corner view  -layer metal10 -resistance 3.7500e-05 -capacitance 2.8042e-0
+##LAYER RC
+
+if {$pdk_name eq "freepdk45"} {
+	# Liberty units are fF,kOhm
+	set_layer_rc -corner view -layer metal1 -resistance 5.4286e-03 -capacitance 7.41819E-02
+	set_layer_rc -corner view  -layer metal2 -resistance 3.5714e-03 -capacitance 6.74606E-02
+	set_layer_rc -corner view  -layer metal3 -resistance 3.5714e-03 -capacitance 8.88758E-02
+	set_layer_rc -corner view  -layer metal4 -resistance 1.5000e-03 -capacitance 1.07121E-01
+	set_layer_rc -corner view  -layer metal5 -resistance 1.5000e-03 -capacitance 1.08964E-01
+	set_layer_rc -corner view  -layer metal6 -resistance 1.5000e-03 -capacitance 1.02044E-01
+	set_layer_rc -corner view  -layer metal7 -resistance 1.8750e-04 -capacitance 1.10436E-01
+	set_layer_rc -corner view  -layer metal8 -resistance 1.8750e-04 -capacitance 9.69714E-02
+	# No calibration data available for metal9 and metal10
+	set_layer_rc -corner view  -layer metal9 -resistance 3.7500e-05 -capacitance 3.6864e-02
+	set_layer_rc -corner view  -layer metal10 -resistance 3.7500e-05 -capacitance 2.8042e-0
+}
+
+if {$pdk_name eq "gf180"} {
+	# From: ./gf180mcu_1p6m_1tm_9k_sp_smim_OPTB_wst.rules
+	# Metal layers
+	set_layer_rc view -layer Metal1 -capacitance 0.00016737654 -resistance 0.628392
+	set_layer_rc  view  -layer Metal2 -capacitance 0.000145608225 -resistance 0.516178
+	set_layer_rc  view  -layer Metal3 -capacitance 0.0001492182252 -resistance 0.516178
+	set_layer_rc  view  -layer Metal4 -capacitance 0.000150508225 -resistance 0.516178
+	set_layer_rc  view  -layer Metal5 -capacitance 0.0001522992252 -resistance 0.516178
+	set_layer_rc  view  -layer MetalTop -capacitance 0.0001584638706 -resistance 0.161545
+	# Vias
+	set_layer_rc  view  -via Via1 -resistance 16.845
+	set_layer_rc  view  -via Via2 -resistance 16.845
+	set_layer_rc  view  -via Via3 -resistance 16.845
+	set_layer_rc  view  -via Via4 -resistance 16.845
+	set_layer_rc  view  -via Via5 -resistance 16.845
+}
 
 ##SET ALL CLOCKS TO IDEL (NOT PROPAGATED)
 unset_propagated_clock [all_clocks]

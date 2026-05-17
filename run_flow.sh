@@ -98,31 +98,222 @@ if [[ $verbose -eq 1 ]]; then
     echo "========================"
 fi
 
-# Здесь ваш основной код
-# Например:
-#echo "Запуск обработки..."
-#echo "Обработка PDK: $PDK_PATH"
-#echo "Использование датасета: $RTL_DATASET_PATH"
-#echo "Результаты сохраняются в: $OUTPUT_DIR"
 
-#exports vars
-export design
-export rtl_dataset_path
-export pdk_path
-export output_dir
+# =========================
+# PDK configuration
+# =========================
+
+if [[ "$pdk_path" =~ freepdk45 ]]; then
+
+    tech_lef="${pdk_path}/base/apr/freepdk45.tech.lef"
+    cells_lef="${pdk_path}/libs/nangate45/lef/NangateOpenCellLibrary.macro.mod.lef"
+    lef_list="${tech_lef} ${cells_lef}"
+
+    liberty="${pdk_path}/libs/nangate45/nldm/NangateOpenCellLibrary_typical.lib"
+
+    core_site="FreePDK45_38x28_10R_NP_162NW_34O"
+
+    tap_cell="TAPCELL_X1"
+    endcap_cell="TAPCELL_X1"
+    tap_cell_distance="120"
+
+    techmap_verilog_files=$(echo ${pdk_path}/libs/nangate45/techmap/yosys/*)
+
+    bottom_routing_metal="metal1"
+    top_routing_metal="metal10"
+
+    pins_hor_layers="metal3 metal5"
+    pins_ver_layers="metal2 metal4"
+
+    wire_rc_metal="metal3"
+
+    tiehi_cell="LOGIC1_X1"
+    tielo_cell="LOGIC0_X1"
+
+    tiehi_cell_pin="Z"
+    tielo_cell_pin="Z"
+
+    filler_cells="FILLCELL_X1 FILLCELL_X2 FILLCELL_X4 FILLCELL_X8 FILLCELL_X16 FILLCELL_X32"
+
+    dont_use_cells="ANTENNA_X1 FILL* LOGIC* TAPCELL_X1 TBUF* TINV* TLAT*"
+
+    max_slew_cts="0.5"
+    max_cap_cts="0.3"
+
+    cts_root_buf="CLKBUF_X3"
+    cts_buf_list="CLKBUF_X1 CLKBUF_X2 CLKBUF_X3"
+
+    process_node="45"
+
+    rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
+
+    pdk_name="freepdk45"
+
+    # =========================
+    # Default flow parameters
+    # =========================
+
+    : ${CLK_PERIOD:=100.0}
+    : ${IO_DELAY:=0.33}
+    : ${CU:=20}
+    : ${AR:=1.0}
+
+    : ${PDN_HWIDTH:=1.6}
+    : ${PDN_HSPACING:=1.6}
+    : ${PDN_HPITCH:=16}
+
+    : ${PDN_VWIDTH:=1.6}
+    : ${PDN_VSPACING:=1.6}
+    : ${PDN_VPITCH:=16}
+
+elif [[ "$pdk_path" =~ gf180 ]]; then
+
+    tech_lef="${pdk_path}/base/apr/gf180mcu_6LM_1TM_9K_9t_tech.lef"
+    cells_lef="${pdk_path}/libs/gf180mcu_fd_sc_mcu9t5v0/lef/gf180mcu_fd_sc_mcu9t5v0.lef"
+    lef_list="${tech_lef} ${cells_lef}"
+
+    liberty="${pdk_path}/libs/gf180mcu_fd_sc_mcu9t5v0/nldm/gf180mcu_fd_sc_mcu9t5v0__ss_125C_4v50.lib.gz"
+
+    core_site="GF018hv5v_green_sc9"
+
+    tap_cell="gf180mcu_fd_sc_mcu9t5v0__filltie"
+    endcap_cell="gf180mcu_fd_sc_mcu9t5v0__endcap"
+
+    tap_cell_distance="25"
+
+    techmap_verilog_files=$(echo ${pdk_path}/libs/gf180mcu_fd_sc_mcu9t5v0/techmap/yosys/*)
+
+    bottom_routing_metal="Metal1"
+    top_routing_metal="MetalTop"
+
+    pins_hor_layers="Metal3 Metal5"
+    pins_ver_layers="Metal2 Metal4"
+
+    wire_rc_metal="Metal3"
+
+    tiehi_cell="gf180mcu_fd_sc_mcu9t5v0__tieh"
+    tielo_cell="gf180mcu_fd_sc_mcu9t5v0__tiel"
+
+    tiehi_cell_pin="Z"
+    tielo_cell_pin="ZN"
+
+    filler_cells="gf180mcu_fd_sc_mcu9t5v0__fillcap_64 \
+gf180mcu_fd_sc_mcu9t5v0__fillcap_32 \
+gf180mcu_fd_sc_mcu9t5v0__fillcap_16 \
+gf180mcu_fd_sc_mcu9t5v0__fillcap_8 \
+gf180mcu_fd_sc_mcu9t5v0__fillcap_4 \
+gf180mcu_fd_sc_mcu9t5v0__fill_1 \
+gf180mcu_fd_sc_mcu9t5v0__fill_2"
+
+    dont_use_cells="gf180mcu_fd_sc_mcu9t5v0__antenna \
+gf180mcu_fd_sc_mcu9t5v0__clk* \
+gf180mcu_fd_sc_mcu9t5v0__endcap \
+gf180mcu_fd_sc_mcu9t5v0__fill* \
+gf180mcu_fd_sc_mcu9t5v0__lat* \
+gf180mcu_fd_sc_mcu9t5v0__tie*"
+
+    max_slew_cts="0.5"
+    max_cap_cts="0.3"
+
+    cts_root_buf="gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
+
+    cts_buf_list="gf180mcu_fd_sc_mcu9t5v0__clkinv_1 \
+gf180mcu_fd_sc_mcu9t5v0__clkinv_2 \
+gf180mcu_fd_sc_mcu9t5v0__clkinv_4 \
+gf180mcu_fd_sc_mcu9t5v0__clkinv_8 \
+gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
+
+    process_node="180"
+
+    rc_extract_file="${pdk_path}/base/pex/openroad/gf180mcu_1p6m_1tm_9k_sp_smim_OPTB_wst.rules"
+
+    pdk_name="gf180"
+
+    # =========================
+    # Default flow parameters
+    # =========================
+
+    : ${CLK_PERIOD:=100.0}
+    : ${IO_DELAY:=0.33}
+    : ${CU:=20}
+    : ${AR:=1.0}
+
+    : ${PDN_HWIDTH:=4.4}
+    : ${PDN_HSPACING:=4.4}
+    : ${PDN_HPITCH:=44}
+
+    : ${PDN_VWIDTH:=4.4}
+    : ${PDN_VSPACING:=4.4}
+    : ${PDN_VPITCH:=44}
+
+else
+    echo "ERROR: Unsupported PDK: $pdk_path"
+    exit 1
+fi
+
+# =========================
+# Export all variables
+# =========================
+
+export tech_lef
+export cells_lef
+export lef_list
+export liberty
+
+export core_site
+
+export tap_cell
+export endcap_cell
+export tap_cell_distance
+
+export techmap_verilog_files
+
+export bottom_routing_metal
+export top_routing_metal
+
+export pins_hor_layers
+export pins_ver_layers
+
+export wire_rc_metal
+
+export tiehi_cell
+export tielo_cell
+
+export tiehi_cell_pin
+export tielo_cell_pin
+
+export filler_cells
+export dont_use_cells
+
+export max_slew_cts
+export max_cap_cts
+
+export cts_root_buf
+export cts_buf_list
+
+export process_node
+
+export rc_extract_file
+
+export pdk_name
+
+export CLK_PERIOD
+export IO_DELAY
+export CU
+export AR
+
+export PDN_HWIDTH
+export PDN_HSPACING
+export PDN_HPITCH
+
+export PDN_VWIDTH
+export PDN_VSPACING
+export PDN_VPITCH
 
 #run synt in yosys
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
 
-# Пример реальной работы (раскомментируйте и адаптируйте):
-# python3 your_script.py \
-#     --pdk "$PDF_PATH" \
-#     --dataset "$RTL_DATASET_PATH" \
-#     --output "$OUTPUT_DIR"
-
-# Завершение скрипта
-#echo "Готово!"
 exit 0

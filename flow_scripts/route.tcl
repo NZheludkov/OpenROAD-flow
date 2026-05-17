@@ -51,7 +51,7 @@ detailed_route \
 
 ##RC EXTRACTION
 define_process_corner -ext_model_index 0 X
-extract_parasitics -ext_model_file "${pdk_path}/base/pex/openroad/typical.rules" \
+extract_parasitics -ext_model_file $rc_extract_file \
 -cc_model 12 -max_res 0 -context_depth 10 \
 -coupling_threshold 0.1
 
