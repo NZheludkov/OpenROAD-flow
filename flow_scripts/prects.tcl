@@ -57,7 +57,7 @@ remove_buffers
 global_placement \
 -timing_driven \
 -routability_driven \
--overflow "0.05" \
+-overflow "0.1" \
 -density "0.75" \
 -init_density_penalty "1e-2" \
 -pad_left "2" \
