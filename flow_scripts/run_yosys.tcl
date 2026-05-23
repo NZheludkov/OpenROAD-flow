@@ -102,6 +102,34 @@ set folder_name $output_dir/${pdk_name}/${design}/$folder_name
 # Создаем папку
 exec mkdir -p $folder_name
 
+# merge all libs in one
+#exec cat {*}$liberty > ${folder_name}/merged.lib
+#exec sh -c "zcat [join $liberty { }] > ${folder_name}/merged.lib"
+set merged_lib "${folder_name}/merged.lib"
+
+set out [open $merged_lib w]
+
+foreach lib $liberty {
+
+    puts "Merging $lib"
+
+    if {[string match "*.gz" $lib]} {
+
+        set data [exec gzip -dc $lib]
+
+    } else {
+
+        set f [open $lib r]
+        set data [read $f]
+        close $f
+    }
+
+    puts -nonewline $out $data
+    puts $out "\n"
+}
+
+close $out
+
 #set MAN_MODE $env(MAN_MODE)
 #if { ${MAN_MODE} } { source ../config.tcl } else { source config.tcl }
 
@@ -118,7 +146,8 @@ foreach rtl $rtl_list {
 #}
 
 ##READ LIBERTY LATCH
-read_liberty -ignore_miss_func -ignore_miss_dir -ignore_miss_data_latch -lib $liberty
+read_liberty -ignore_miss_func -ignore_miss_dir -ignore_miss_data_latch -lib ${folder_name}/merged.lib
+stat -liberty ${folder_name}/merged.lib
 
 ##SYNT
 hierarchy -check -top $design
@@ -170,16 +199,16 @@ opt
 opt_clean -purge
 
 ##ABC
-
-dfflibmap -liberty $liberty
+dfflibmap -liberty ${folder_name}/merged.lib
 
 #set D [expr 10 * 1000]
 
-abc -liberty $liberty \
--dont_use *clk* -dont_use *edfxtp* -dont_use *decap* -dont_use *dly*  -dont_use *diode*  -dont_use *ebuf*  -dont_use *ebuf*  -dont_use *ed*  -dont_use *ei*  -dont_use *lpflow*  -dont_use *probe*  -dont_use *sd*  -dont_use *tap*  -dont_use *bufbuf*  -dont_use *bufinv*  -dont_use *conb*  -dont_use *metal*   -dont_use *diode*  -dont_use *tap*
+abc -liberty ${folder_name}/merged.lib
+
+#-dont_use *clk* -dont_use *edfxtp* -dont_use *decap* -dont_use *dly*  -dont_use *diode*  -dont_use *ebuf*  -dont_use *ebuf*  -dont_use *ed*  -dont_use *ei*  -dont_use *lpflow*  -dont_use *probe*  -dont_use *sd*  -dont_use *tap*  -dont_use *bufbuf*  -dont_use *bufinv*  -dont_use *conb*  -dont_use *metal*   -dont_use *diode*  -dont_use *tap*
 
 exec mkdir -p ${folder_name}/synt/netlist_synt_stat/
-tee -o ${folder_name}/synt/netlist_synt_stat/stat.txt stat -top $design -liberty $liberty
+tee -o ${folder_name}/synt/netlist_synt_stat/stat.txt stat -top $design -liberty ${folder_name}/merged.lib
 
 ##Clean up the design (just the last step of opt)
 #clean
@@ -191,3 +220,6 @@ clean -purge
 # write synthesized design
 exec mkdir -p ${folder_name}/synt/netlist/
 write_verilog -noattr -noexpr -nohex -nodec ${folder_name}/synt/netlist/${design}.v
+
+##remove merged lib
+exec rm ${folder_name}/merged.lib

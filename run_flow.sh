@@ -230,6 +230,170 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     : ${PDN_VSPACING:=1.6}
     : ${PDN_VPITCH:=16}
 
+elif [[ "$pdk_path" =~ asap7 ]]; then
+
+    tech_lef="${pdk_path}/base/apr/asap7_tech.lef"
+    cells_lef="${pdk_path}/libs/asap7sc7p5t_lvt/lef/asap7sc7p5t_28_L.lef"
+    lef_list="${tech_lef} ${cells_lef}"
+
+    liberty="\
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_AO_LVT_SS_nldm.lib.gz \
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_INVBUF_LVT_SS_nldm.lib.gz \
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_OA_LVT_SS_nldm.lib.gz \
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SEQ_LVT_SS_nldm.lib.gz \
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SIMPLE_LVT_SS_nldm.lib.gz \
+    "
+
+    core_site="asap7sc7p5t"
+
+    tap_cell="TAPCELL_ASAP7_75t_L"
+    endcap_cell="TAPCELL_ASAP7_75t_L"
+
+    tap_cell_distance="25"
+
+    techmap_verilog_files=$(echo ${pdk_path}/libs/asap7sc7p5t_lvt/techmap/yosys/*)
+
+    bottom_routing_metal="M1"
+    top_routing_metal="M9"
+
+    pins_hor_layers="M3 M5"
+    pins_ver_layers="M2 M4"
+
+    wire_rc_metal="M3"
+
+    tiehi_cell="TIEHIx1_ASAP7_75t_L"
+    tielo_cell="TIELOx1_ASAP7_75t_L"
+
+    tiehi_cell_pin="H"
+    tielo_cell_pin="L"
+
+    filler_cells="DECAPx10_ASAP7_75t_L \
+    DECAPx1_ASAP7_75t_L \
+    DECAPx2_ASAP7_75t_L \
+    DECAPx2b_ASAP7_75t_L \
+    DECAPx4_ASAP7_75t_L \
+    DECAPx6_ASAP7_75t_L \
+    "
+
+    dont_use_cells="CK* TAP* TIE*"
+
+    max_slew_cts="0.3"
+    max_cap_cts="0.1"
+
+    cts_root_buf="CKINVDCx16_ASAP7_75t_L"
+
+    cts_buf_list="CKINVDCx16_ASAP7_75t_L \
+    CKINVDCx8_ASAP7_75t_L \
+    CKINVDCx12_ASAP7_75t_L \
+    CKINVDCx10_ASAP7_75t_L \
+    "
+
+    process_node="7"
+
+    rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
+
+    pdk_name="asap7"
+
+    # =========================
+    # Default flow parameters
+    # =========================
+
+    : ${CLK_PERIOD:=10.0}
+    : ${IO_DELAY:=0.33}
+    : ${CU:=20}
+    : ${AR:=1.0}
+
+    : ${PDN_HWIDTH:=4.4}
+    : ${PDN_HSPACING:=4.4}
+    : ${PDN_HPITCH:=44}
+
+    : ${PDN_VWIDTH:=4.4}
+    : ${PDN_VSPACING:=4.4}
+    : ${PDN_VPITCH:=44}
+
+elif [[ "$pdk_path" =~ sky130 ]]; then
+
+    tech_lef="${pdk_path}/base/apr/sky130_fd_sc.tlef"
+    cells_lef="${pdk_path}/libs/sky130hd/lef/sky130_fd_sc_hd_merged.lef"
+    lef_list="${tech_lef} ${cells_lef}"
+
+    liberty="\
+    ${pdk_path}/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz \
+    "
+
+    core_site="unithd"
+
+    tap_cell="sky130_fd_sc_hd__tapvpwrvgnd_1"
+    endcap_cell="sky130_fd_sc_hd__fill_2"
+
+    tap_cell_distance="14"
+
+    techmap_verilog_files=$(echo ${pdk_path}/libs/sky130hd/techmap/yosys/*)
+
+    bottom_routing_metal="met1"
+    top_routing_metal="met5"
+
+    pins_hor_layers="met3 met5"
+    pins_ver_layers="met2 met4"
+
+    wire_rc_metal="met3"
+
+    tiehi_cell="sky130_fd_sc_hd__conb_1"
+    tielo_cell="sky130_fd_sc_hd__conb_1"
+
+    tiehi_cell_pin="HI"
+    tielo_cell_pin="LO"
+
+    filler_cells="\
+    sky130_fd_sc_hd__decap_12 \
+    sky130_fd_sc_hd__decap_4 \
+    sky130_fd_sc_hd__decap_3 \
+    sky130_fd_sc_hd__decap_6 \
+    sky130_fd_sc_hd__decap_8 \
+    sky130_fd_sc_hd__fill_8 \
+    sky130_fd_sc_hd__fill_4 \
+    sky130_fd_sc_hd__fill_2 \
+    sky130_fd_sc_hd__fill_1 \
+
+    "
+
+    dont_use_cells="*probe* *tap* *iso* *lpflow* *dly* *clkdly*"
+
+    max_slew_cts="0.5"
+    max_cap_cts="0.3"
+
+    cts_root_buf="sky130_fd_sc_hd__clkinv_16"
+
+    cts_buf_list="\
+    sky130_fd_sc_hd__clkinv_16 \
+    sky130_fd_sc_hd__clkinv_8 \
+    sky130_fd_sc_hd__clkinv_4 \
+    sky130_fd_sc_hd__clkinv_2 \
+    "
+
+    process_node="130"
+
+    rc_extract_file="${pdk_path}/base/pex/openroad/maximum.rules"
+
+    pdk_name="sky130"
+
+    # =========================
+    # Default flow parameters
+    # =========================
+
+    : ${CLK_PERIOD:=30.0}
+    : ${IO_DELAY:=0.33}
+    : ${CU:=20}
+    : ${AR:=1.0}
+
+    : ${PDN_HWIDTH:=8}
+    : ${PDN_HSPACING:=8}
+    : ${PDN_HPITCH:=80}
+
+    : ${PDN_VWIDTH:=3}
+    : ${PDN_VSPACING:=3}
+    : ${PDN_VPITCH:=30}
+
 elif [[ "$pdk_path" =~ gf180 ]]; then
 
     tech_lef="${pdk_path}/base/apr/gf180mcu_6LM_1TM_9K_9t_tech.lef"
@@ -262,19 +426,19 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     tielo_cell_pin="ZN"
 
     filler_cells="gf180mcu_fd_sc_mcu9t5v0__fillcap_64 \
-gf180mcu_fd_sc_mcu9t5v0__fillcap_32 \
-gf180mcu_fd_sc_mcu9t5v0__fillcap_16 \
-gf180mcu_fd_sc_mcu9t5v0__fillcap_8 \
-gf180mcu_fd_sc_mcu9t5v0__fillcap_4 \
-gf180mcu_fd_sc_mcu9t5v0__fill_1 \
-gf180mcu_fd_sc_mcu9t5v0__fill_2"
+    gf180mcu_fd_sc_mcu9t5v0__fillcap_32 \
+    gf180mcu_fd_sc_mcu9t5v0__fillcap_16 \
+    gf180mcu_fd_sc_mcu9t5v0__fillcap_8 \
+    gf180mcu_fd_sc_mcu9t5v0__fillcap_4 \
+    gf180mcu_fd_sc_mcu9t5v0__fill_1 \
+    gf180mcu_fd_sc_mcu9t5v0__fill_2"
 
     dont_use_cells="gf180mcu_fd_sc_mcu9t5v0__antenna \
-gf180mcu_fd_sc_mcu9t5v0__clk* \
-gf180mcu_fd_sc_mcu9t5v0__endcap \
-gf180mcu_fd_sc_mcu9t5v0__fill* \
-gf180mcu_fd_sc_mcu9t5v0__lat* \
-gf180mcu_fd_sc_mcu9t5v0__tie*"
+    gf180mcu_fd_sc_mcu9t5v0__clk* \
+    gf180mcu_fd_sc_mcu9t5v0__endcap \
+    gf180mcu_fd_sc_mcu9t5v0__fill* \
+    gf180mcu_fd_sc_mcu9t5v0__lat* \
+    gf180mcu_fd_sc_mcu9t5v0__tie*"
 
     max_slew_cts="0.5"
     max_cap_cts="0.3"
@@ -282,10 +446,10 @@ gf180mcu_fd_sc_mcu9t5v0__tie*"
     cts_root_buf="gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
 
     cts_buf_list="gf180mcu_fd_sc_mcu9t5v0__clkinv_1 \
-gf180mcu_fd_sc_mcu9t5v0__clkinv_2 \
-gf180mcu_fd_sc_mcu9t5v0__clkinv_4 \
-gf180mcu_fd_sc_mcu9t5v0__clkinv_8 \
-gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
+    gf180mcu_fd_sc_mcu9t5v0__clkinv_2 \
+    gf180mcu_fd_sc_mcu9t5v0__clkinv_4 \
+    gf180mcu_fd_sc_mcu9t5v0__clkinv_8 \
+    gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
 
     process_node="180"
 

@@ -96,3 +96,13 @@ write_sdf -digits 3 -corner view $folder_name/route/sdf/sdf.sdf
 ##END TIME
 set end_time [exec date +%s]
 set route_time [expr $end_time - $start_time]
+
+##WRITE TIME
+
+exec mkdir -p $folder_name/runtime/
+set file [open $folder_name/runtime/runtime.csv "w"]
+
+puts $file "init_design;create_floorplan;prects;cts;postcts;route"
+puts $file "${init_design_time};${create_floorplan_time};${prects_time};${cts_time};${postcts_time};${route_time}"
+
+close $file

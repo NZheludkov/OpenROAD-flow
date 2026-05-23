@@ -13,8 +13,9 @@ foreach lef $lef_list {
 }
 
 ##READ LIBERTY FILE
-read_liberty -corner view $liberty
-
+foreach lib $liberty {
+	read_liberty -corner view $lib
+}
 
 ##READ NETLIST
 read_verilog ${folder_name}/synt/netlist/${design}.v

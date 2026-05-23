@@ -16,18 +16,19 @@ make_tracks
 ##CREATE POWER GROUND GRID
 pdngen -reset
 
-#GLOBAL NET CONNECT
-add_global_connection -net VDD -pin_pattern "VDD" -power
-add_global_connection -net VSS -pin_pattern "VSS" -ground
-
-global_connect
-
-#VOLTAGE DOMAIN
-set_voltage_domain -name Core -power VDD -ground VSS
-define_pdn_grid -name Core -voltage_domain Core 
-
 #ADD STRIPES
 if {$pdk_name eq "freepdk45"} {
+
+    #GLOBAL NET CONNECT
+    add_global_connection -net VDD -pin_pattern "VDD" -power
+    add_global_connection -net VSS -pin_pattern "VSS" -ground
+
+    global_connect
+
+    #VOLTAGE DOMAIN
+    set_voltage_domain -name Core -power VDD -ground VSS
+    define_pdn_grid -name Core -voltage_domain Core 
+
     add_pdn_stripe -layer metal10 -width $PDN_VWIDTH -offset 16  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
     add_pdn_stripe -layer metal9 -width $PDN_HWIDTH -offset 12  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
     add_pdn_stripe -layer metal8 -width $PDN_VWIDTH -offset 12  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
@@ -47,6 +48,17 @@ if {$pdk_name eq "freepdk45"} {
 }
 
 if {$pdk_name eq "gf180"} {
+
+    #GLOBAL NET CONNECT
+    add_global_connection -net VDD -pin_pattern "VDD" -power
+    add_global_connection -net VSS -pin_pattern "VSS" -ground
+
+    global_connect
+
+    #VOLTAGE DOMAIN
+    set_voltage_domain -name Core -power VDD -ground VSS
+    define_pdn_grid -name Core -voltage_domain Core 
+
     add_pdn_stripe -layer MetalTop -width $PDN_VWIDTH -offset 8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
     add_pdn_stripe -layer Metal5 -width $PDN_HWIDTH -offset 2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
     add_pdn_stripe -layer Metal4 -width $PDN_VWIDTH -offset 2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
@@ -56,6 +68,55 @@ if {$pdk_name eq "gf180"} {
     add_pdn_connect -layers {Metal4 Metal5} -grid Core
     add_pdn_connect -layers {Metal5 MetalTop} -grid Core
 }
+
+if {$pdk_name eq "asap7"} {
+
+    #GLOBAL NET CONNECT
+    add_global_connection -net VDD -pin_pattern "VDD" -power
+    add_global_connection -net VSS -pin_pattern "VSS" -ground
+
+    global_connect
+
+    #VOLTAGE DOMAIN
+    set_voltage_domain -name Core -power VDD -ground VSS
+    define_pdn_grid -name Core -voltage_domain Core 
+
+    add_pdn_stripe -layer M9 -width $PDN_HWIDTH -offset 1.2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
+    add_pdn_stripe -layer M8 -width $PDN_VWIDTH -offset 1.2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer M7 -width $PDN_HWIDTH -offset 0.8  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
+    add_pdn_stripe -layer M6 -width $PDN_VWIDTH -offset 0.8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer M5 -width $PDN_HWIDTH -offset 0.2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
+    add_pdn_stripe -layer M4 -width $PDN_VWIDTH -offset 0.2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer M1 -width 0.018 -grid Core -followpins
+
+    add_pdn_connect -layers {M1 M4} -grid Core
+    add_pdn_connect -layers {M4 M5} -grid Core
+    add_pdn_connect -layers {M5 M6} -grid Core
+    add_pdn_connect -layers {M6 M7} -grid Core
+    add_pdn_connect -layers {M7 M8} -grid Core
+    add_pdn_connect -layers {M8 M9} -grid Core
+}
+
+if {$pdk_name eq "sky130"} {
+
+    #GLOBAL NET CONNECT
+    add_global_connection -net VDD -pin_pattern "VPWR" -power
+    add_global_connection -net VSS -pin_pattern "VGND" -ground
+
+    global_connect
+
+    #VOLTAGE DOMAIN
+    set_voltage_domain -name Core -power VDD -ground VSS
+    define_pdn_grid -name Core -voltage_domain Core 
+
+    add_pdn_stripe -layer met5 -width $PDN_HWIDTH -offset 4  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
+    add_pdn_stripe -layer met4 -width $PDN_VWIDTH -offset 4  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
+    add_pdn_stripe -layer met1 -width 0.48 -grid Core -followpins
+
+    add_pdn_connect -layers {met1 met4} -grid Core
+    add_pdn_connect -layers {met4 met5} -grid Core
+}
+
 
 #GENERATE POWER-GROUND GRID
 pdngen
