@@ -237,11 +237,7 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     lef_list="${tech_lef} ${cells_lef}"
 
     liberty="\
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_AO_LVT_SS_nldm.lib.gz \
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_INVBUF_LVT_SS_nldm.lib.gz \
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_OA_LVT_SS_nldm.lib.gz \
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SEQ_LVT_SS_nldm.lib.gz \
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SIMPLE_LVT_SS_nldm.lib.gz \
+    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_AO_LVT_SS_nldm.lib/asap7sc7p5t_AO_LVT_SS_nldm_211120.lib \
     "
 
     core_site="asap7sc7p5t"

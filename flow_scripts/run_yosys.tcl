@@ -169,25 +169,22 @@ flatten
 
 
 opt_expr
-opt_clean
+#opt_clean
 opt -nodffe -nosdff
 fsm
 opt
 wreduce
 peepopt
-opt_clean
+#opt_clean
 alumacc
 share
 opt
 memory -nomap
-opt_clean
+#opt_clean
 opt -fast -full
 memory_map
 opt -full
 techmap
-foreach file $techmap_verilog_files {
-	techmap -map $file
-}
 opt -fast
 abc -fast
 opt -fast
@@ -196,16 +193,22 @@ stat
 check
 
 opt
-opt_clean -purge
+#opt_clean -purge
 
-##ABC
-dfflibmap -liberty ${folder_name}/merged.lib
+#checks
+hierarchy -check -top $design
+stat -top $design
+check
 
-#set D [expr 10 * 1000]
+#techmap
+foreach file $techmap_verilog_files {
+    techmap -map $file
+}
 
+dfflibmap -liberty /home/nzheludkov/phd/lambdapdk/lambdapdk/asap7/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SEQ_LVT_SS_nldm.lib.gz
+
+#abc
 abc -liberty ${folder_name}/merged.lib
-
-#-dont_use *clk* -dont_use *edfxtp* -dont_use *decap* -dont_use *dly*  -dont_use *diode*  -dont_use *ebuf*  -dont_use *ebuf*  -dont_use *ed*  -dont_use *ei*  -dont_use *lpflow*  -dont_use *probe*  -dont_use *sd*  -dont_use *tap*  -dont_use *bufbuf*  -dont_use *bufinv*  -dont_use *conb*  -dont_use *metal*   -dont_use *diode*  -dont_use *tap*
 
 exec mkdir -p ${folder_name}/synt/netlist_synt_stat/
 tee -o ${folder_name}/synt/netlist_synt_stat/stat.txt stat -top $design -liberty ${folder_name}/merged.lib
