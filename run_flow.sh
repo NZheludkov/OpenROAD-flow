@@ -183,7 +183,7 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     techmap_verilog_files=$(echo ${pdk_path}/libs/nangate45/techmap/yosys/*)
 
     bottom_routing_metal="metal1"
-    top_routing_metal="metal10"
+    top_routing_metal="metal7"
 
     pins_hor_layers="metal3 metal5"
     pins_ver_layers="metal2 metal4"
@@ -198,7 +198,7 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
 
     filler_cells="FILLCELL_X1 FILLCELL_X2 FILLCELL_X4 FILLCELL_X8 FILLCELL_X16 FILLCELL_X32"
 
-    dont_use_cells="ANTENNA_X1 FILL* LOGIC* TAPCELL_X1 TBUF* TINV* TLAT*"
+    dont_use_cells="ANTENNA_X1 FILL* LOGIC* TBUF* TINV* TLAT*"
 
     max_slew_cts="0.5"
     max_cap_cts="0.3"
@@ -208,10 +208,17 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
 
     process_node="45"
 
+    liberty_time_unit="ns"
+    liberty_current_unit="mA"
+    liberty_voltage_unit="V"
+    liberty_res_unit="kohm"
+    liberty_cap_unit="fF"
+
+    ndr_type="full"
+
     rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
 
     pdk_name="freepdk45"
-    echo aaaa
 
     # =========================
     # Default flow parameters
@@ -236,9 +243,7 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     cells_lef="${pdk_path}/libs/asap7sc7p5t_lvt/lef/asap7sc7p5t_28_L.lef"
     lef_list="${tech_lef} ${cells_lef}"
 
-    liberty="\
-    ${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_AO_LVT_SS_nldm.lib/asap7sc7p5t_AO_LVT_SS_nldm_211120.lib \
-    "
+    liberty="${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_LVT_SS_nldm.lib"
 
     core_site="asap7sc7p5t"
 
@@ -250,12 +255,12 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     techmap_verilog_files=$(echo ${pdk_path}/libs/asap7sc7p5t_lvt/techmap/yosys/*)
 
     bottom_routing_metal="M1"
-    top_routing_metal="M9"
+    top_routing_metal="M7"
 
-    pins_hor_layers="M3 M5"
-    pins_ver_layers="M2 M4"
+    pins_hor_layers="M2 M4"
+    pins_ver_layers="M3 M5"
 
-    wire_rc_metal="M3"
+    wire_rc_metal="M5"
 
     tiehi_cell="TIEHIx1_ASAP7_75t_L"
     tielo_cell="TIELOx1_ASAP7_75t_L"
@@ -269,6 +274,8 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     DECAPx2b_ASAP7_75t_L \
     DECAPx4_ASAP7_75t_L \
     DECAPx6_ASAP7_75t_L \
+    FILLER_ASAP7_75t_L \
+    FILLERxp5_ASAP7_75t_L \
     "
 
     dont_use_cells="CK* TAP* TIE*"
@@ -286,6 +293,14 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
 
     process_node="7"
 
+    liberty_time_unit="ps"
+    liberty_current_unit="mA"
+    liberty_voltage_unit="V"
+    liberty_res_unit="kohm"
+    liberty_cap_unit="fF"
+
+    ndr_type="full"
+
     rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
 
     pdk_name="asap7"
@@ -294,18 +309,18 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     # Default flow parameters
     # =========================
 
-    : ${CLK_PERIOD:=10.0}
+    : ${CLK_PERIOD:=1000.0}
     : ${IO_DELAY:=0.33}
-    : ${CU:=20}
+    : ${CU:=30}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH:=4.4}
-    : ${PDN_HSPACING:=4.4}
-    : ${PDN_HPITCH:=44}
+    : ${PDN_HWIDTH:=2.0}
+    : ${PDN_HSPACING:=2.0}
+    : ${PDN_HPITCH:=20}
 
-    : ${PDN_VWIDTH:=4.4}
-    : ${PDN_VSPACING:=4.4}
-    : ${PDN_VPITCH:=44}
+    : ${PDN_VWIDTH:=2.0}
+    : ${PDN_VSPACING:=2.0}
+    : ${PDN_VPITCH:=20}
 
 elif [[ "$pdk_path" =~ sky130 ]]; then
 
@@ -313,9 +328,7 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     cells_lef="${pdk_path}/libs/sky130hd/lef/sky130_fd_sc_hd_merged.lef"
     lef_list="${tech_lef} ${cells_lef}"
 
-    liberty="\
-    ${pdk_path}/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz \
-    "
+    liberty="${pdk_path}/libs/sky130hd/nldm/sky130_fd_sc_hd__ss_n40C_1v40.lib.gz"
 
     core_site="unithd"
 
@@ -350,7 +363,6 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     sky130_fd_sc_hd__fill_4 \
     sky130_fd_sc_hd__fill_2 \
     sky130_fd_sc_hd__fill_1 \
-
     "
 
     dont_use_cells="*probe* *tap* *iso* *lpflow* *dly* *clkdly*"
@@ -368,6 +380,14 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     "
 
     process_node="130"
+
+    liberty_time_unit="ns"
+    liberty_current_unit="mA"
+    liberty_voltage_unit="V"
+    liberty_res_unit="kohm"
+    liberty_cap_unit="pF"
+
+    ndr_type="full"
 
     rc_extract_file="${pdk_path}/base/pex/openroad/maximum.rules"
 
@@ -449,6 +469,14 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
 
     process_node="180"
 
+    liberty_time_unit="ns"
+    liberty_current_unit="mA"
+    liberty_voltage_unit="V"
+    liberty_res_unit="ohm"
+    liberty_cap_unit="pF"
+
+    ndr_type="full"
+
     rc_extract_file="${pdk_path}/base/pex/openroad/gf180mcu_1p6m_1tm_9k_sp_smim_OPTB_wst.rules"
 
     pdk_name="gf180"
@@ -521,6 +549,14 @@ export max_cap_cts
 export cts_root_buf
 export cts_buf_list
 
+export ndr_type
+
+export liberty_time_unit
+export liberty_current_unit
+export liberty_voltage_unit
+export liberty_res_unit
+export liberty_cap_unit
+
 export process_node
 
 export rc_extract_file
@@ -544,6 +580,6 @@ export PDN_VPITCH
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
 
 exit 0

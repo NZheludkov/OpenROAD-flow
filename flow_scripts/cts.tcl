@@ -21,12 +21,14 @@ configure_cts_characterization\
     -max_cap $max_cap
 
 #DISABLE NDR FOR BETTER ROUTING
-set_cts_config -apply_ndr none
+set_cts_config -apply_ndr $ndr_type
 
 ##CTS
 clock_tree_synthesis \
     -buf_list $cts_buf_list \
-    -root_buf $cts_root_buf
+    -root_buf $cts_root_buf \
+    -apply_ndr $ndr_type \
+    -repair_clock_nets
 
 ##DETAIL PLACEMENT AFTER ADDING CTS BUFS
 detailed_placement
@@ -63,7 +65,7 @@ exec mkdir -p $folder_name/cts/sdc/
 exec mkdir -p $folder_name/cts/sdf/
 
 write_def $folder_name/cts/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell] $folder_name/cts/netlist/netlist.v
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $folder_name/cts/netlist/netlist.v
 write_sdc $folder_name/cts/sdc/sdc.sdc
 write_sdf -digits 3 -corner view $folder_name/cts/sdf/sdf.sdf
 

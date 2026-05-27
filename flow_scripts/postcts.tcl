@@ -18,13 +18,13 @@ estimate_parasitics -placement
 repair_timing -setup -verbose -repair_tns 100
 
 ##FIX HOLD 1
-repair_timing -hold -allow_setup_violations
+repair_timing -hold -allow_setup_violations -verbose 
 
 ##FIX SETUP 2
-repair_timing -setup
+repair_timing -setup -verbose
 
 ##FIX HOLD 2
-repair_timing -hold -allow_setup_violations
+repair_timing -hold -allow_setup_violations -verbose 
 
 ##DETAIL PLACEMENT AFTER ADDING CTS BUFS
 detailed_placement
@@ -54,7 +54,7 @@ exec mkdir -p $folder_name/postcts/sdc/
 exec mkdir -p $folder_name/postcts/sdf/
 
 write_def $folder_name/postcts/def/def.def
-write_verilog -remove_cells "*FILL* *TAPCELL_X1*" $folder_name/postcts/netlist/netlist.v
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $folder_name/postcts/netlist/netlist.v
 write_sdc $folder_name/postcts/sdc/sdc.sdc
 write_sdf -digits 3 -corner view $folder_name/postcts/sdf/sdf.sdf
 

@@ -2,16 +2,64 @@
 set start_time [exec date +%s]
 
 ##CREATE FP
-initialize_floorplan -utilization $CU -core_space 3 -aspect_ratio $AR -site $core_site
+initialize_floorplan -utilization $CU -core_space 1 -aspect_ratio $AR -site $core_site
 
 ##INIT ROWS (ADD ENDCAP and TRACKS)  
 tapcell \
 -distance $tap_cell_distance \
 -tapcell_master $tap_cell \
--endcap_master $tap_cell
+-endcap_master $endcap_cell
 
 ##CREATE LAYER TRACKS
-make_tracks
+
+if {$pdk_name eq "freepdk45"} {
+    make_tracks -x_offset 0.07 -x_pitch 0.07 -y_offset 0.07 -y_pitch 0.07 metal1
+    make_tracks -x_offset 0.14 -x_pitch 0.14 -y_offset 0.14 -y_pitch 0.14 metal2
+    make_tracks -x_offset 0.14 -x_pitch 0.14 -y_offset 0.14 -y_pitch 0.14 metal3
+    make_tracks -x_offset 0.28 -x_pitch 0.28 -y_offset 0.28 -y_pitch 0.28 metal4
+    make_tracks -x_offset 0.28 -x_pitch 0.28 -y_offset 0.28 -y_pitch 0.28 metal5
+    make_tracks -x_offset 0.28 -x_pitch 0.28 -y_offset 0.28 -y_pitch 0.28 metal6
+    make_tracks -x_offset 0.80 -x_pitch 0.80 -y_offset 0.80 -y_pitch 0.80 metal7
+}
+
+if {$pdk_name eq "asap7"} {
+    make_tracks Pad -x_offset 0.116 -x_pitch 0.08 -y_offset 0.116 -y_pitch 0.08
+    make_tracks M9 -x_offset 0.116 -x_pitch 0.08 -y_offset 0.116 -y_pitch 0.08
+    make_tracks M8 -x_offset 0.116 -x_pitch 0.08 -y_offset 0.116 -y_pitch 0.08
+    make_tracks M7 -x_offset 0.016 -x_pitch 0.064 -y_offset 0.016 -y_pitch 0.064
+    make_tracks M6 -x_offset 0.012 -x_pitch 0.048 -y_offset 0.016 -y_pitch 0.064
+    make_tracks M5 -x_offset 0.012 -x_pitch 0.048 -y_offset 0.012 -y_pitch 0.048
+    make_tracks M4 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.012 -y_pitch 0.048
+    make_tracks M3 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.009 -y_pitch 0.036
+
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.045 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.081 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.117 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.153 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.189 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.225 -y_pitch 0.270
+    make_tracks M2 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.270 -y_pitch 0.270
+
+    make_tracks M1 -x_offset 0.009 -x_pitch 0.036 -y_offset 0.009 -y_pitch 0.036
+}
+
+if {$pdk_name eq "sky130"} {
+    make_tracks -x_offset 0.10 -x_pitch 0.10 -y_offset 0.10 -y_pitch 0.10 li1
+    make_tracks -x_offset 0.35 -x_pitch 0.35 -y_offset 0.35 -y_pitch 0.35 met1
+    make_tracks -x_offset 0.35 -x_pitch 0.35 -y_offset 0.35 -y_pitch 0.35 met2
+    make_tracks -x_offset 0.80 -x_pitch 0.80 -y_offset 0.80 -y_pitch 0.80 met3
+    make_tracks -x_offset 0.80 -x_pitch 0.80 -y_offset 0.80 -y_pitch 0.80 met4
+    make_tracks -x_offset 1.20 -x_pitch 1.20 -y_offset 1.20 -y_pitch 1.20 met5
+}
+
+if {$pdk_name eq "gf180"} {
+    make_tracks -x_offset 0.54 -x_pitch 0.54 -y_offset 0.54 -y_pitch 0.54 Metal1
+    make_tracks -x_offset 0.54 -x_pitch 0.54 -y_offset 0.54 -y_pitch 0.54 Metal2
+    make_tracks -x_offset 0.54 -x_pitch 0.54 -y_offset 0.54 -y_pitch 0.54 Metal3
+    make_tracks -x_offset 0.54 -x_pitch 0.54 -y_offset 0.54 -y_pitch 0.54 Metal4
+    make_tracks -x_offset 0.54 -x_pitch 0.54 -y_offset 0.54 -y_pitch 0.54 Metal5
+    make_tracks -x_offset 0.99 -x_pitch 0.99 -y_offset 0.99 -y_pitch 0.99 MetalTop
+}
 
 ##CREATE POWER GROUND GRID
 pdngen -reset
@@ -27,24 +75,18 @@ if {$pdk_name eq "freepdk45"} {
 
     #VOLTAGE DOMAIN
     set_voltage_domain -name Core -power VDD -ground VSS
-    define_pdn_grid -name Core -voltage_domain Core 
+    define_pdn_grid -name Core -voltage_domain Core
 
-    add_pdn_stripe -layer metal10 -width $PDN_VWIDTH -offset 16  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer metal9 -width $PDN_HWIDTH -offset 12  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer metal8 -width $PDN_VWIDTH -offset 12  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer metal7 -width $PDN_HWIDTH -offset 8  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer metal6 -width $PDN_VWIDTH -offset 8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer metal5 -width $PDN_HWIDTH -offset 2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer metal4 -width $PDN_VWIDTH -offset 2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
     add_pdn_stripe -layer metal1 -width 0.17 -grid Core -followpins
+    add_pdn_stripe -layer metal4 -width [expr 0.28 * 4] -offset [expr 0.28 * 1] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal5 -width [expr 0.28 * 4] -offset [expr 0.28 * 1] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal6 -width [expr 0.28 * 4] -offset [expr 0.28 * 16] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal7 -width [expr 0.80 * 4] -offset [expr 0.80 * 1] -pitch [expr 0.80 * 32] -spacing [expr 0.80 * 4]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {metal1 metal4} -grid Core
     add_pdn_connect -layers {metal4 metal5} -grid Core
     add_pdn_connect -layers {metal5 metal6} -grid Core
     add_pdn_connect -layers {metal6 metal7} -grid Core
-    add_pdn_connect -layers {metal7 metal8} -grid Core
-    add_pdn_connect -layers {metal8 metal9} -grid Core
-    add_pdn_connect -layers {metal9 metal10} -grid Core
 }
 
 if {$pdk_name eq "gf180"} {
@@ -57,12 +99,12 @@ if {$pdk_name eq "gf180"} {
 
     #VOLTAGE DOMAIN
     set_voltage_domain -name Core -power VDD -ground VSS
-    define_pdn_grid -name Core -voltage_domain Core 
+    define_pdn_grid -name Core -voltage_domain Core
 
-    add_pdn_stripe -layer MetalTop -width $PDN_VWIDTH -offset 8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer Metal5 -width $PDN_HWIDTH -offset 2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer Metal4 -width $PDN_VWIDTH -offset 2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
     add_pdn_stripe -layer Metal1 -width 0.9 -grid Core -followpins
+    add_pdn_stripe -layer Metal4 -width [expr 0.54 * 4] -offset [expr 0.54 * 1] -pitch [expr 0.54 * 32] -spacing [expr 0.54 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer Metal5 -width [expr 0.54 * 4] -offset [expr 0.54 * 1] -pitch [expr 0.54 * 32] -spacing [expr 0.54 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer MetalTop -width [expr 0.99 * 4] -offset [expr 0.99 * 16] -pitch [expr 0.99 * 32] -spacing [expr 0.99 * 4]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {Metal1 Metal4} -grid Core
     add_pdn_connect -layers {Metal4 Metal5} -grid Core
@@ -77,24 +119,56 @@ if {$pdk_name eq "asap7"} {
 
     global_connect
 
-    #VOLTAGE DOMAIN
-    set_voltage_domain -name Core -power VDD -ground VSS
-    define_pdn_grid -name Core -voltage_domain Core 
+    ####################################
+    # voltage domains
+    ####################################
+    set_voltage_domain -name CORE -power {VDD} -ground {VSS}
+    ####################################
+    # standard cell grid
+    ####################################
+    define_pdn_grid -name {stdcells} -voltage_domains CORE -pins {M7}
+    add_pdn_stripe -grid {stdcells} -layer {M1} -width {0.018} -pitch {0.54} -offset {0} -followpins
+    add_pdn_stripe -grid {stdcells} -layer {M2} -width {0.018} -pitch {0.54} -offset {0} -followpins
+    add_pdn_stripe -grid {stdcells} -layer {M5} -width {0.12} -spacing {0.072} -pitch {5.904} \
+        -offset {0.300} -snap_to_grid
+    add_pdn_stripe -grid {stdcells} -layer {M6} -width {0.288} -spacing {0.096} -pitch {6.0} \
+        -offset {0.513} -snap_to_grid
 
-    add_pdn_stripe -layer M9 -width $PDN_HWIDTH -offset 1.2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer M8 -width $PDN_VWIDTH -offset 1.2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer M7 -width $PDN_HWIDTH -offset 0.8  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer M6 -width $PDN_VWIDTH -offset 0.8  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer M5 -width $PDN_HWIDTH -offset 0.2  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer M4 -width $PDN_VWIDTH -offset 0.2  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
-    add_pdn_stripe -layer M1 -width 0.018 -grid Core -followpins
+    set M7_pitch [expr {([lindex [ord::get_core_area] 2] - [lindex [ord::get_core_area] 0]) / 2}]
+    if {$M7_pitch > 10.0} {
+        set M7_pitch 10.0
+    }
 
-    add_pdn_connect -layers {M1 M4} -grid Core
-    add_pdn_connect -layers {M4 M5} -grid Core
-    add_pdn_connect -layers {M5 M6} -grid Core
-    add_pdn_connect -layers {M6 M7} -grid Core
-    add_pdn_connect -layers {M7 M8} -grid Core
-    add_pdn_connect -layers {M8 M9} -grid Core
+    proc snap_grid {value} {
+        set grid [[ord::get_db_tech] getManufacturingGrid]
+        set dbus [[ord::get_db_tech] getDbUnitsPerMicron]
+
+        set val_dbus [ord::microns_to_dbu $value]
+        set val_snapped [expr {$grid * round($val_dbus / $grid)}]
+
+        return [ord::dbu_to_microns $val_snapped]
+    }
+
+    add_pdn_stripe -grid {stdcells} -layer {M7} -width {0.288} -pitch [snap_grid $M7_pitch] \
+        -offset [snap_grid [expr {$M7_pitch / 4}]] -snap_to_grid
+
+    add_pdn_connect -grid {stdcells} -layers {M1 M2}
+    add_pdn_connect -grid {stdcells} -layers {M2 M5}
+    add_pdn_connect -grid {stdcells} -layers {M5 M6}
+    add_pdn_connect -grid {stdcells} -layers {M6 M7}
+
+    utl::warn FLW 1 "Relaxed technology routing rules loaded for ASAP7,\
+        this should only be used for trial routing"
+
+    utl::info FLW 1 "Removing right way on grid only rules"
+    [[ord::get_db_tech] findLayer M1] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M2] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M3] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M4] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M5] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M6] setRightWayOnGridOnly 0
+    [[ord::get_db_tech] findLayer M7] setRightWayOnGridOnly 0
+  
 }
 
 if {$pdk_name eq "sky130"} {
@@ -107,16 +181,15 @@ if {$pdk_name eq "sky130"} {
 
     #VOLTAGE DOMAIN
     set_voltage_domain -name Core -power VDD -ground VSS
-    define_pdn_grid -name Core -voltage_domain Core 
+    define_pdn_grid -name Core -voltage_domain Core
 
-    add_pdn_stripe -layer met5 -width $PDN_HWIDTH -offset 4  -pitch $PDN_HPITCH -spacing $PDN_HSPACING  -grid Core
-    add_pdn_stripe -layer met4 -width $PDN_VWIDTH -offset 4  -pitch $PDN_VPITCH -spacing $PDN_VSPACING  -grid Core
     add_pdn_stripe -layer met1 -width 0.48 -grid Core -followpins
+    add_pdn_stripe -layer met4 -width [expr 0.80 * 4] -offset [expr 0.80 * 1] -pitch [expr 0.80 * 32] -spacing [expr 0.80 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer met5 -width [expr 1.20 * 4] -offset [expr 1.20 * 1] -pitch [expr 1.20 * 32] -spacing [expr 1.20 * 4]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {met1 met4} -grid Core
     add_pdn_connect -layers {met4 met5} -grid Core
 }
-
 
 #GENERATE POWER-GROUND GRID
 pdngen
@@ -131,7 +204,7 @@ exec mkdir -p ${folder_name}/floorplan/sdc/
 exec mkdir -p ${folder_name}/floorplan/sdf/
 
 write_def ${folder_name}/floorplan/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell] ${folder_name}/floorplan/netlist/netlist.v
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] ${folder_name}/floorplan/netlist/netlist.v
 write_sdc ${folder_name}/floorplan/sdc/sdc.sdc
 write_sdf -digits 3 -corner view ${folder_name}/floorplan/sdf/sdf.sdf
 

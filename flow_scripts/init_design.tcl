@@ -1,9 +1,6 @@
 ##START TIME
 set start_time [exec date +%s]
 
-##UNITS
-set_cmd_units -time ns -capacitance pF -current mA -voltage V -resistance kOhm -distance um
- 
 ##CREATE TIMING CORNER
 define_corners view
 
@@ -16,6 +13,9 @@ foreach lef $lef_list {
 foreach lib $liberty {
 	read_liberty -corner view $lib
 }
+
+##UNITS
+set_cmd_units -time $liberty_time_unit -capacitance $liberty_cap_unit -current $liberty_current_unit -voltage $liberty_voltage_unit -resistance $liberty_res_unit -distance um
 
 ##READ NETLIST
 read_verilog ${folder_name}/synt/netlist/${design}.v

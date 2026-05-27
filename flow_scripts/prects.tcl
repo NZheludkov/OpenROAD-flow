@@ -9,10 +9,6 @@ foreach cell $dont_use_cells {
 ##ROUTING LAYERS
 set_routing_layers -signal $bottom_routing_metal-$top_routing_metal -clock $bottom_routing_metal-$top_routing_metal
 
-##LAYER FOR RC ESTIMATION
-set_wire_rc -clock -layer $wire_rc_metal
-set_wire_rc -signal -layer $wire_rc_metal
-
 ##LAYER RC
 
 if {$pdk_name eq "freepdk45"} {
@@ -85,6 +81,10 @@ if {$pdk_name eq "sky130"} {
 	set_layer_rc view -layer met5 -capacitance 4.057272E-5 -resistance 2.2375E-5
 }
 
+##LAYER FOR RC ESTIMATION
+set_wire_rc -clock -layer $wire_rc_metal
+set_wire_rc -signal -layer $wire_rc_metal
+
 ##SET ALL CLOCKS TO IDEL (NOT PROPAGATED)
 unset_propagated_clock [all_clocks]
 
@@ -147,7 +147,7 @@ exec mkdir -p ${folder_name}/prects/sdc/
 exec mkdir -p ${folder_name}/prects/sdf/
 
 write_def ${folder_name}/prects/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell] ${folder_name}/prects/netlist/netlist.v
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] ${folder_name}/prects/netlist/netlist.v
 write_sdc ${folder_name}/prects/sdc/sdc.sdc
 write_sdf -digits 3 -corner view ${folder_name}/prects/sdf/sdf.sdf
 

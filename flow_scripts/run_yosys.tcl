@@ -102,55 +102,49 @@ set folder_name $output_dir/${pdk_name}/${design}/$folder_name
 # Создаем папку
 exec mkdir -p $folder_name
 
-# merge all libs in one
-#exec cat {*}$liberty > ${folder_name}/merged.lib
-#exec sh -c "zcat [join $liberty { }] > ${folder_name}/merged.lib"
-set merged_lib "${folder_name}/merged.lib"
+# ============================================================
+# Read Liberty
+# ============================================================
+# ASAP7 Liberty may contain incomplete latch information.
+# Ignore non-critical parser warnings.
 
-set out [open $merged_lib w]
+puts "\n=== Reading Liberty ==="
 
-foreach lib $liberty {
+read_liberty \
+    -ignore_miss_func \
+    -ignore_miss_dir \
+    -ignore_miss_data_latch \
+    -lib \
+    $liberty
 
-    puts "Merging $lib"
+# ============================================================
+# Read RTL
+# ============================================================
 
-    if {[string match "*.gz" $lib]} {
+puts "\n=== Reading RTL ==="
 
-        set data [exec gzip -dc $lib]
-
-    } else {
-
-        set f [open $lib r]
-        set data [read $f]
-        close $f
-    }
-
-    puts -nonewline $out $data
-    puts $out "\n"
-}
-
-close $out
-
-#set MAN_MODE $env(MAN_MODE)
-#if { ${MAN_MODE} } { source ../config.tcl } else { source config.tcl }
-
-#read rtl
 set rtl_list [glob $rtl_dataset_path/designs/$design/rtl/*.v]
+
 foreach rtl $rtl_list {
-	read_verilog $rtl
+    puts "Reading: $rtl"
+    read_verilog $rtl
 }
 
-#read system verilog
-#set rtl_list [glob $rtl_dataset_path/designs/$design/rtl/*.sv]
-#foreach rtl $rtl_list {
-#	#read_verilog -sv $rtl
-#}
+# ============================================================
+# Design elaboration
+# ============================================================
 
-##READ LIBERTY LATCH
-read_liberty -ignore_miss_func -ignore_miss_dir -ignore_miss_data_latch -lib ${folder_name}/merged.lib
-stat -liberty ${folder_name}/merged.lib
+puts "\n=== Hierarchy Check ==="
 
-##SYNT
 hierarchy -check -top $design
+
+# ============================================================
+# Process lowering
+# ============================================================
+# Convert behavioral RTL into internal RTLIL netlist.
+
+puts "\n=== Process Conversion ==="
+
 proc_clean
 proc_rmdead
 proc_prune
@@ -162,67 +156,177 @@ proc_dlatch
 proc_dff
 proc_memwr
 proc_clean
-opt_expr
 
-#flatten or no
+# ============================================================
+# Early optimizations
+# ============================================================
+
+puts "\n=== Early Optimization ==="
+
+opt_expr
+opt_clean
+opt -nodffe -nosdff
+
+# ============================================================
+# Optional hierarchy flattening
+# ============================================================
+# Flatten improves optimization but removes hierarchy.
+
+puts "\n=== Flatten Design ==="
+
 flatten
 
+# ============================================================
+# Logic optimization
+# ============================================================
+
+puts "\n=== Logic Optimization ==="
 
 opt_expr
-#opt_clean
-opt -nodffe -nosdff
+opt_clean
+
 fsm
 opt
+
 wreduce
 peepopt
-#opt_clean
+
+opt_clean
+
 alumacc
 share
+
 opt
+
+# ============================================================
+# Memory processing
+# ============================================================
+
+puts "\n=== Memory Mapping ==="
+
 memory -nomap
-#opt_clean
+opt_clean
+
 opt -fast -full
+
 memory_map
+
 opt -full
+
+# ============================================================
+# Technology mapping preparation
+# ============================================================
+
+puts "\n=== Techmap Preparation ==="
+
 techmap
 opt -fast
+
+# ============================================================
+# Generic ABC optimization
+# ============================================================
+# Technology-independent optimization before cell mapping.
+
+puts "\n=== Generic ABC Optimization ==="
+
 abc -fast
 opt -fast
+
+# ============================================================
+# Post-optimization checks
+# ============================================================
+
 hierarchy -check -top $design
+
 stat
 check
 
+# ============================================================
+# Final generic cleanup
+# ============================================================
+
 opt
-#opt_clean -purge
+opt_clean -purge
 
-#checks
-hierarchy -check -top $design
-stat -top $design
-check
+# ============================================================
+# Custom techmaps
+# ============================================================
+# Optional user-defined technology mappings.
 
-#techmap
-foreach file $techmap_verilog_files {
-    techmap -map $file
+if {[llength $techmap_verilog_files] > 0} {
+
+    puts "\n=== Applying Custom Techmaps ==="
+
+    foreach file $techmap_verilog_files {
+
+        puts "Techmap: $file"
+
+        techmap -map $file
+    }
 }
 
-dfflibmap -liberty /home/nzheludkov/phd/lambdapdk/lambdapdk/asap7/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_SEQ_LVT_SS_nldm.lib.gz
+# ============================================================
+# Sequential cell mapping
+# ============================================================
 
-#abc
-abc -liberty ${folder_name}/merged.lib
+puts "\n=== DFF Mapping ==="
 
-exec mkdir -p ${folder_name}/synt/netlist_synt_stat/
-tee -o ${folder_name}/synt/netlist_synt_stat/stat.txt stat -top $design -liberty ${folder_name}/merged.lib
+dfflibmap -liberty $liberty
 
-##Clean up the design (just the last step of opt)
-#clean
+# ============================================================
+# Technology mapping with ABC
+# ============================================================
+# IMPORTANT:
+# Use legacy ABC instead of abc9/abc_new for ASAP7 stability.
+
+puts "\n=== Standard Cell Mapping ==="
+
+abc -liberty $liberty
+
+# ============================================================
+# Final checks
+# ============================================================
+
+puts "\n=== Final Checks ==="
+
+hierarchy -check -top $design
+
+stat -top $design
+
+check
+
+# ============================================================
+# Net cleanup
+# ============================================================
+
 splitnets
 clean -purge
 
-##autoname
+# ============================================================
+# Reports
+# ============================================================
 
-# write synthesized design
+puts "\n=== Writing Reports ==="
+
+exec mkdir -p ${folder_name}/synt/netlist_synt_stat/
+
+tee -o \
+    ${folder_name}/synt/netlist_synt_stat/stat.txt \
+    stat -top $design -liberty $liberty
+
+# ============================================================
+# Write synthesized netlist
+# ============================================================
+
+puts "\n=== Writing Netlist ==="
+
 exec mkdir -p ${folder_name}/synt/netlist/
-write_verilog -noattr -noexpr -nohex -nodec ${folder_name}/synt/netlist/${design}.v
 
-##remove merged lib
-exec rm ${folder_name}/merged.lib
+write_verilog \
+    -noattr \
+    -noexpr \
+    -nohex \
+    -nodec \
+    ${folder_name}/synt/netlist/${design}.v
+
+puts "\n=== SYNTHESIS FINISHED SUCCESSFULLY ==="

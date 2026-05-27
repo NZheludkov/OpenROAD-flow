@@ -76,6 +76,15 @@ set rc_extract_file      $env(rc_extract_file)
 
 set pdk_name             $env(pdk_name)
 
+set liberty_time_unit            $env(liberty_time_unit)
+set liberty_current_unit         $env(liberty_current_unit)
+set liberty_voltage_unit         $env(liberty_voltage_unit)
+set liberty_res_unit             $env(liberty_res_unit)
+set liberty_cap_unit             $env(liberty_cap_unit)
+
+set ndr_type			$env(ndr_type)
+
+
 ##source config
 source $rtl_dataset_path/designs/${design}/config.tcl
 

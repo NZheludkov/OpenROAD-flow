@@ -21,13 +21,13 @@ repair_design -verbose
 repair_timing -setup -verbose -repair_tns 100
 
 ##FIX HOLD 1
-repair_timing -hold -allow_setup_violations
+repair_timing -hold -allow_setup_violations -verbose
 
 ##FIX SETUP 2
 repair_timing -setup -verbose -repair_tns 100
 
 ##FIX HOLD 2
-repair_timing -hold -allow_setup_violations
+repair_timing -hold -allow_setup_violations -verbose
 
 ##DETAIL PLACEMENT AFTER ADDING CTS BUFS
 detailed_placement
@@ -88,7 +88,7 @@ exec mkdir -p $folder_name/route/spef/
 exec mkdir -p $folder_name/route/sdf/
 
 write_def $folder_name/route/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell] $folder_name/route/netlist/netlist.v
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $folder_name/route/netlist/netlist.v
 write_sdc $folder_name/route/sdc/sdc.sdc
 write_spef $folder_name/route/spef/spef.spef
 write_sdf -digits 3 -corner view $folder_name/route/sdf/sdf.sdf
