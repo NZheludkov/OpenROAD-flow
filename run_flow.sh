@@ -243,7 +243,7 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     cells_lef="${pdk_path}/libs/asap7sc7p5t_lvt/lef/asap7sc7p5t_28_L.lef"
     lef_list="${tech_lef} ${cells_lef}"
 
-    liberty="${pdk_path}/libs/asap7sc7p5t_lvt/nldm/asap7sc7p5t_LVT_SS_nldm.lib"
+    liberty="${pdk_path}/libs/asap7sc7p5t_lvt/nldm/test/asap7sc7p5t_AO_LVT_SS_nldm_211120.lib"
 
     core_site="asap7sc7p5t"
 
@@ -580,6 +580,6 @@ export PDN_VPITCH
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
 
 exit 0

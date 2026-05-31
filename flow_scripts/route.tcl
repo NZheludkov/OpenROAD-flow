@@ -44,7 +44,7 @@ global_route -allow_congestion -verbose -guide_file $folder_name/route/groute_gu
 ##DETAIL ROUTE
 exec mkdir -p $folder_name/route/drc_report/
 detailed_route \
--droute_end_iter "5" \
+-droute_end_iter "10" \
 -verbose "10" \
 -output_drc $folder_name/route/drc_report/drc_report.txt \
 -db_process_node $process_node
