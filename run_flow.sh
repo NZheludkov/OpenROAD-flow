@@ -87,33 +87,33 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
 
-        --pdn_hwidth)
-            PDN_HWIDTH="$2"
+        --pdn_hwidth_track)
+            PDN_HWIDTH_TRACK="$2"
             shift 2
             ;;
 
-        --pdn_hspacing)
-            PDN_HSPACING="$2"
+        --pdn_hspacing_track)
+            PDN_HSPACING_TRACK="$2"
             shift 2
             ;;
 
-        --pdn_hpitch)
-            PDN_HPITCH="$2"
+        --pdn_hpitch_track)
+            PDN_HPITCH_TRACK="$2"
             shift 2
             ;;
 
-        --pdn_vwidth)
-            PDN_VWIDTH="$2"
+        --pdn_vwidth_track)
+            PDN_VWIDTH_TRACK="$2"
             shift 2
             ;;
 
-        --pdn_vspacing)
-            PDN_VSPACING="$2"
+        --pdn_vspacing_track)
+            PDN_VSPACING_TRACK="$2"
             shift 2
             ;;
 
-        --pdn_vpitch)
-            PDN_VPITCH="$2"
+        --pdn_vpitch_track)
+            PDN_VPITCH_TRACK="$2"
             shift 2
             ;;
         *)
@@ -229,13 +229,13 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     : ${CU:=20}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH:=1.6}
-    : ${PDN_HSPACING:=1.6}
-    : ${PDN_HPITCH:=16}
+    : ${PDN_HWIDTH_TRACK:=4}
+    : ${PDN_HSPACING_TRACK:=4}
+    : ${PDN_HPITCH_TRACK:=32}
 
-    : ${PDN_VWIDTH:=1.6}
-    : ${PDN_VSPACING:=1.6}
-    : ${PDN_VPITCH:=16}
+    : ${PDN_VWIDTH_TRACK:=4}
+    : ${PDN_VSPACING_TRACK:=4}
+    : ${PDN_VPITCH_TRACK:=32}
 
 elif [[ "$pdk_path" =~ asap7 ]]; then
 
@@ -314,13 +314,13 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     : ${CU:=30}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH:=2.0}
-    : ${PDN_HSPACING:=2.0}
-    : ${PDN_HPITCH:=20}
+    : ${PDN_HWIDTH_TRACK:=4}
+    : ${PDN_HSPACING_TRACK:=4}
+    : ${PDN_HPITCH_TRACK:=32}
 
-    : ${PDN_VWIDTH:=2.0}
-    : ${PDN_VSPACING:=2.0}
-    : ${PDN_VPITCH:=20}
+    : ${PDN_VWIDTH_TRACK:=4}
+    : ${PDN_VSPACING_TRACK:=4}
+    : ${PDN_VPITCH_TRACK:=32}
 
 elif [[ "$pdk_path" =~ sky130 ]]; then
 
@@ -402,13 +402,13 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     : ${CU:=20}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH:=8}
-    : ${PDN_HSPACING:=8}
-    : ${PDN_HPITCH:=80}
+    : ${PDN_HWIDTH_TRACK:=4}
+    : ${PDN_HSPACING_TRACK:=4}
+    : ${PDN_HPITCH_TRACK:=32}
 
-    : ${PDN_VWIDTH:=3}
-    : ${PDN_VSPACING:=3}
-    : ${PDN_VPITCH:=30}
+    : ${PDN_VWIDTH_TRACK:=4}
+    : ${PDN_VSPACING_TRACK:=4}
+    : ${PDN_VPITCH_TRACK:=32}
 
 elif [[ "$pdk_path" =~ gf180 ]]; then
 
@@ -490,13 +490,13 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     : ${CU:=20}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH:=4.4}
-    : ${PDN_HSPACING:=4.4}
-    : ${PDN_HPITCH:=44}
+    : ${PDN_HWIDTH_TRACK:=4}
+    : ${PDN_HSPACING_TRACK:=4}
+    : ${PDN_HPITCH_TRACK:=32}
 
-    : ${PDN_VWIDTH:=4.4}
-    : ${PDN_VSPACING:=4.4}
-    : ${PDN_VPITCH:=44}
+    : ${PDN_VWIDTH_TRACK:=4}
+    : ${PDN_VSPACING_TRACK:=4}
+    : ${PDN_VPITCH_TRACK:=32}
 
 else
     echo "ERROR: Unsupported PDK: $pdk_path"
@@ -568,13 +568,13 @@ export IO_DELAY
 export CU
 export AR
 
-export PDN_HWIDTH
-export PDN_HSPACING
-export PDN_HPITCH
+export PDN_HWIDTH_TRACK
+export PDN_HSPACING_TRACK
+export PDN_HPITCH_TRACK
 
-export PDN_VWIDTH
-export PDN_VSPACING
-export PDN_VPITCH
+export PDN_VWIDTH_TRACK
+export PDN_VSPACING_TRACK
+export PDN_VPITCH_TRACK
 
 #run synt in yosys
 yosys ./flow_scripts/run_yosys.tcl

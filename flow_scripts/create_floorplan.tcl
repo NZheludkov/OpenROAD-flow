@@ -78,10 +78,10 @@ if {$pdk_name eq "freepdk45"} {
     define_pdn_grid -name Core -voltage_domain Core
 
     add_pdn_stripe -layer metal1 -width 0.17 -grid Core -followpins
-    add_pdn_stripe -layer metal4 -width [expr 0.28 * 4] -offset [expr 0.28 * 1] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer metal5 -width [expr 0.28 * 4] -offset [expr 0.28 * 1] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer metal6 -width [expr 0.28 * 4] -offset [expr 0.28 * 16] -pitch [expr 0.28 * 32] -spacing [expr 0.28 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer metal7 -width [expr 0.80 * 4] -offset [expr 0.80 * 1] -pitch [expr 0.80 * 32] -spacing [expr 0.80 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal4 -width [expr 0.28 * $PDN_VWIDTH_TRACK] -offset [expr 0.28 * 1] -pitch [expr 0.28 * $PDN_VPITCH_TRACK] -spacing [expr 0.28 * $PDN_VSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal5 -width [expr 0.28 * $PDN_HWIDTH_TRACK] -offset [expr 0.28 * 1] -pitch [expr 0.28 * $PDN_HPITCH_TRACK] -spacing [expr 0.28 * $PDN_HSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal6 -width [expr 0.28 * $PDN_VWIDTH_TRACK] -offset [expr 0.28 * 16] -pitch [expr 0.28 * $PDN_VPITCH_TRACK] -spacing [expr 0.28 * $PDN_VSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer metal7 -width [expr 0.80 * $PDN_HWIDTH_TRACK] -offset [expr 0.80 * 1] -pitch [expr 0.80 * $PDN_HPITCH_TRACK] -spacing [expr 0.80 * $PDN_HSPACING_TRACK]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {metal1 metal4} -grid Core
     add_pdn_connect -layers {metal4 metal5} -grid Core
@@ -102,9 +102,9 @@ if {$pdk_name eq "gf180"} {
     define_pdn_grid -name Core -voltage_domain Core
 
     add_pdn_stripe -layer Metal1 -width 0.9 -grid Core -followpins
-    add_pdn_stripe -layer Metal4 -width [expr 0.54 * 4] -offset [expr 0.54 * 1] -pitch [expr 0.54 * 32] -spacing [expr 0.54 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer Metal5 -width [expr 0.54 * 4] -offset [expr 0.54 * 1] -pitch [expr 0.54 * 32] -spacing [expr 0.54 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer MetalTop -width [expr 0.99 * 4] -offset [expr 0.99 * 16] -pitch [expr 0.99 * 32] -spacing [expr 0.99 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer Metal4 -width [expr 0.54 * $PDN_VWIDTH_TRACK] -offset [expr 0.54 * 1] -pitch [expr 0.54 * $PDN_VPITCH_TRACK] -spacing [expr 0.54 * $PDN_VSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer Metal5 -width [expr 0.54 * $PDN_HWIDTH_TRACK] -offset [expr 0.54 * 1] -pitch [expr 0.54 * $PDN_HPITCH_TRACK] -spacing [expr 0.54 * $PDN_HSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer MetalTop -width [expr 0.99 * $PDN_VWIDTH_TRACK] -offset [expr 0.99 * 16] -pitch [expr 0.99 * $PDN_VPITCH_TRACK] -spacing [expr 0.99 * $PDN_VSPACING_TRACK]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {Metal1 Metal4} -grid Core
     add_pdn_connect -layers {Metal4 Metal5} -grid Core
@@ -184,8 +184,8 @@ if {$pdk_name eq "sky130"} {
     define_pdn_grid -name Core -voltage_domain Core
 
     add_pdn_stripe -layer met1 -width 0.48 -grid Core -followpins
-    add_pdn_stripe -layer met4 -width [expr 0.80 * 4] -offset [expr 0.80 * 1] -pitch [expr 0.80 * 32] -spacing [expr 0.80 * 4]  -grid Core -snap_to_grid
-    add_pdn_stripe -layer met5 -width [expr 1.20 * 4] -offset [expr 1.20 * 1] -pitch [expr 1.20 * 32] -spacing [expr 1.20 * 4]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer met4 -width [expr 0.80 * $PDN_VWIDTH_TRACK] -offset [expr 0.80 * 1] -pitch [expr 0.80 * $PDN_VPITCH_TRACK] -spacing [expr 0.80 * $PDN_VSPACING_TRACK]  -grid Core -snap_to_grid
+    add_pdn_stripe -layer met5 -width [expr 1.20 * $PDN_HWIDTH_TRACK] -offset [expr 1.20 * 1] -pitch [expr 1.20 * $PDN_HPITCH_TRACK] -spacing [expr 1.20 * $PDN_HSPACING_TRACK]  -grid Core -snap_to_grid
 
     add_pdn_connect -layers {met1 met4} -grid Core
     add_pdn_connect -layers {met4 met5} -grid Core

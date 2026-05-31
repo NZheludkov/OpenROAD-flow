@@ -24,13 +24,13 @@ set AR                  $env(AR)
 # PDN vars
 # =====================================
 
-set PDN_HWIDTH          $env(PDN_HWIDTH)
-set PDN_HSPACING        $env(PDN_HSPACING)
-set PDN_HPITCH          $env(PDN_HPITCH)
+set PDN_HWIDTH_TRACK          $env(PDN_HWIDTH_TRACK)
+set PDN_HSPACING_TRACK        $env(PDN_HSPACING_TRACK)
+set PDN_HPITCH_TRACK          $env(PDN_HPITCH_TRACK)
 
-set PDN_VWIDTH          $env(PDN_VWIDTH)
-set PDN_VSPACING        $env(PDN_VSPACING)
-set PDN_VPITCH          $env(PDN_VPITCH)
+set PDN_VWIDTH_TRACK          $env(PDN_VWIDTH_TRACK)
+set PDN_VSPACING_TRACK       $env(PDN_VSPACING_TRACK)
+set PDN_VPITCH_TRACK          $env(PDN_VPITCH_TRACK)
 
 # =====================================
 # PDK vars
@@ -88,12 +88,13 @@ if {[info exists CLK_PERIOD]} { append folder_name "CLK_${CLK_PERIOD}_" }
 if {[info exists IO_DELAY]} { append folder_name "IO_${IO_DELAY}_" }
 if {[info exists CU]} { append folder_name "CU_${CU}_" }
 if {[info exists AR]} { append folder_name "AR_${AR}_" }
-if {[info exists PDN_HWIDTH]} { append folder_name "HW_${PDN_HWIDTH}_" }
-if {[info exists PDN_HSPACING]} { append folder_name "HS_${PDN_HSPACING}_" }
-if {[info exists PDN_HPITCH]} { append folder_name "HP_${PDN_HPITCH}_" }
-if {[info exists PDN_VWIDTH]} { append folder_name "VW_${PDN_VWIDTH}_" }
-if {[info exists PDN_VSPACING]} { append folder_name "VS_${PDN_VSPACING}_" }
-if {[info exists PDN_VPITCH]} { append folder_name "VP_${PDN_VPITCH}_" }
+if {[info exists PDN_HWIDTH_TRACK]} { append folder_name "HW_${PDN_HWIDTH_TRACK}_" }
+if {[info exists PDN_HSPACING_TRACK]} { append folder_name "HS_${PDN_HSPACING_TRACK}_" }
+if {[info exists PDN_HPITCH_TRACK]} { append folder_name "HP_${PDN_HPITCH_TRACK}_" }
+if {[info exists PDN_VWIDTH_TRACK]} { append folder_name "VW_${PDN_VWIDTH_TRACK}_" }
+if {[info exists PDN_VSPACING_TRACK]} { append folder_name "VS_${PDN_VSPACING_TRACK}_" }
+if {[info exists PDN_VPITCH_TRACK]} { append folder_name "VP_${PDN_VPITCH_TRACK}_" }
+
 
 # Удаляем последний символ "_"
 set folder_name [string trimright $folder_name "_"]
