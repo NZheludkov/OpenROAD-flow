@@ -575,6 +575,11 @@ mkdir -p "$run_dir/config/"
 
 #write vars to config.tcl
 cat > "$run_dir/config/config.tcl" << EOF
+set run_dir "$run_dir"
+set pdk_path "$pdk_path"
+set rtl_dataset_path "$rtl_dataset_path"
+set design "$design"
+set output_dir "$output_dir"
 set pdk_name "$pdk_name"
 set tech_lef "$tech_lef"
 set cells_lef "$cells_lef"
@@ -584,7 +589,7 @@ set core_site "$core_site"
 set tap_cell "$tap_cell"
 set endcap_cell "$endcap_cell"
 set tap_cell_distance "$tap_cell_distance"
-set techmap_verilog_files [glob ${pdk_path}/libs/gf180mcu_fd_sc_mcu9t5v0/techmap/yosys/*]
+set techmap_verilog_files "$techmap_verilog_files"
 set bottom_routing_metal "$bottom_routing_metal"
 set top_routing_metal "$top_routing_metal"
 set pins_hor_layers [list $pins_hor_layers]
@@ -618,10 +623,11 @@ set OUT_PORT_LOAD "$OUT_PORT_LOAD"
 set INPUT_TRANSITION "$INPUT_TRANSITION"
 EOF
 
+#export config file
+export CONFIG_FILE="$run_dir/config/config.tcl"
+
 #run synt in yosys
-#yosys ./flow_scripts/run_yosys.tcl
-
-
+yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
 #openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
