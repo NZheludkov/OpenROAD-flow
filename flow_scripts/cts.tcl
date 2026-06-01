@@ -40,34 +40,34 @@ optimize_mirroring
 estimate_parasitics -placement
 
 ##CTS REPORT
-exec mkdir -p $folder_name/cts/report_cts/
-exec mkdir -p $folder_name/cts/report_skew/
+exec mkdir -p $run_dir/cts/report_cts/
+exec mkdir -p $run_dir/cts/report_skew/
 
-report_cts -out_file $folder_name/cts/report_cts/cts_report.txt
-report_clock_skew -digits 3 > $folder_name/cts/report_skew/report_skew.txt
+report_cts -out_file $run_dir/cts/report_cts/cts_report.txt
+report_clock_skew -digits 3 > $run_dir/cts/report_skew/report_skew.txt
 
 ##REPORT TIMING AFTER CTS
-exec mkdir -p $folder_name/cts/timing_reports/
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/cts/timing_reports/in2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/cts/timing_reports/reg2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/cts/timing_reports/reg2out_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/cts/timing_reports/in2out_setup.txt
+exec mkdir -p $run_dir/cts/timing_reports/
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $run_dir/cts/timing_reports/in2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $run_dir/cts/timing_reports/reg2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $run_dir/cts/timing_reports/reg2out_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $run_dir/cts/timing_reports/in2out_setup.txt
 
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/cts/timing_reports/in2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/cts/timing_reports/reg2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/cts/timing_reports/reg2out_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/cts/timing_reports/in2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $run_dir/cts/timing_reports/in2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $run_dir/cts/timing_reports/reg2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $run_dir/cts/timing_reports/reg2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $run_dir/cts/timing_reports/in2out_hold.txt
 
 ##WRITE CTS DATA
-exec mkdir -p $folder_name/cts/def/
-exec mkdir -p $folder_name/cts/netlist/
-exec mkdir -p $folder_name/cts/sdc/
-exec mkdir -p $folder_name/cts/sdf/
+exec mkdir -p $run_dir/cts/def/
+exec mkdir -p $run_dir/cts/netlist/
+exec mkdir -p $run_dir/cts/sdc/
+exec mkdir -p $run_dir/cts/sdf/
 
-write_def $folder_name/cts/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $folder_name/cts/netlist/netlist.v
-write_sdc $folder_name/cts/sdc/sdc.sdc
-write_sdf -digits 3 -corner view $folder_name/cts/sdf/sdf.sdf
+write_def $run_dir/cts/def/def.def
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $run_dir/cts/netlist/netlist.v
+write_sdc $run_dir/cts/sdc/sdc.sdc
+write_sdf -digits 3 -corner view $run_dir/cts/sdf/sdf.sdf
 
 ##END TIME
 set end_time [exec date +%s]

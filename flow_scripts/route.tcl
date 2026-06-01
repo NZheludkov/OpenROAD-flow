@@ -2,14 +2,14 @@
 set start_time [exec date +%s]
 
 ##CREATE FOLDER FOR STAGE REPORTS
-exec mkdir -p $folder_name/route/
+exec mkdir -p $run_dir/route/
 
 ##ROUTE SETTINGS
 set_routing_layers -signal $bottom_routing_metal-$top_routing_metal -clock $bottom_routing_metal-$top_routing_metal
 
 #GLOBAL ROUTE
-exec mkdir -p $folder_name/route/groute_guide/
-global_route -allow_congestion -verbose -guide_file $folder_name/route/groute_guide/groute.guide
+exec mkdir -p $run_dir/route/groute_guide/
+global_route -allow_congestion -verbose -guide_file $run_dir/route/groute_guide/groute.guide
 
 ##EVAL SPEF
 estimate_parasitics -global_routing
@@ -39,14 +39,14 @@ optimize_mirroring
 filler_placement -prefix FILLER $filler_cells
 
 #GLOBAL ROUTE
-global_route -allow_congestion -verbose -guide_file $folder_name/route/groute_guide/groute.guide
+global_route -allow_congestion -verbose -guide_file $run_dir/route/groute_guide/groute.guide
 
 ##DETAIL ROUTE
-exec mkdir -p $folder_name/route/drc_report/
+exec mkdir -p $run_dir/route/drc_report/
 detailed_route \
 -droute_end_iter "10" \
 -verbose "10" \
--output_drc $folder_name/route/drc_report/drc_report.txt \
+-output_drc $run_dir/route/drc_report/drc_report.txt \
 -db_process_node $process_node
 
 ##RC EXTRACTION
@@ -56,42 +56,42 @@ extract_parasitics -ext_model_file $rc_extract_file \
 -coupling_threshold 0.1
 
 ##WRITE AND READ SPEF
-exec mkdir -p $folder_name/route/spef/
-exec mkdir -p $folder_name/route/parasitic_annotation/
+exec mkdir -p $run_dir/route/spef/
+exec mkdir -p $run_dir/route/parasitic_annotation/
 
-write_spef $folder_name/route/spef/spef.spef
-read_spef $folder_name/route/spef/spef.spef -corner view -max
+write_spef $run_dir/route/spef/spef.spef
+read_spef $run_dir/route/spef/spef.spef -corner view -max
 
-report_parasitic_annotation -report_unannotated > $folder_name/route/parasitic_annotation/parasitic_annotation.txt
+report_parasitic_annotation -report_unannotated > $run_dir/route/parasitic_annotation/parasitic_annotation.txt
 
 ##REPORT TIMING AFTER DROUTE
-exec mkdir -p $folder_name/route/timing_reports/
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/route/timing_reports/in2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/route/timing_reports/reg2reg_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/route/timing_reports/reg2out_setup.txt
-report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/route/timing_reports/in2out_setup.txt
+exec mkdir -p $run_dir/route/timing_reports/
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $run_dir/route/timing_reports/in2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $run_dir/route/timing_reports/reg2reg_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $run_dir/route/timing_reports/reg2out_setup.txt
+report_checks -corner view -digits 3 -path_delay max -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $run_dir/route/timing_reports/in2out_setup.txt
 
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $folder_name/route/timing_reports/in2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $folder_name/route/timing_reports/reg2reg_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $folder_name/route/timing_reports/reg2out_hold.txt
-report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $folder_name/route/timing_reports/in2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2reg  > $run_dir/route/timing_reports/in2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2reg > $run_dir/route/timing_reports/reg2reg_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $run_dir/route/timing_reports/reg2out_hold.txt
+report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $run_dir/route/timing_reports/in2out_hold.txt
 
 ##WRITE WNS
 with_output_to_variable a {report_checks -path_group reg2reg -digits 3 -format slack_only -no_line_splits}
 set wns [lindex $a 4]
 
 ##WRITE ROUTE DATA
-exec mkdir -p $folder_name/route/def/
-exec mkdir -p $folder_name/route/netlist/
-exec mkdir -p $folder_name/route/sdc/
-exec mkdir -p $folder_name/route/spef/
-exec mkdir -p $folder_name/route/sdf/
+exec mkdir -p $run_dir/route/def/
+exec mkdir -p $run_dir/route/netlist/
+exec mkdir -p $run_dir/route/sdc/
+exec mkdir -p $run_dir/route/spef/
+exec mkdir -p $run_dir/route/sdf/
 
-write_def $folder_name/route/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $folder_name/route/netlist/netlist.v
-write_sdc $folder_name/route/sdc/sdc.sdc
-write_spef $folder_name/route/spef/spef.spef
-write_sdf -digits 3 -corner view $folder_name/route/sdf/sdf.sdf
+write_def $run_dir/route/def/def.def
+write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $run_dir/route/netlist/netlist.v
+write_sdc $run_dir/route/sdc/sdc.sdc
+write_spef $run_dir/route/spef/spef.spef
+write_sdf -digits 3 -corner view $run_dir/route/sdf/sdf.sdf
 
 ##END TIME
 set end_time [exec date +%s]
@@ -99,8 +99,8 @@ set route_time [expr $end_time - $start_time]
 
 ##WRITE TIME
 
-exec mkdir -p $folder_name/runtime/
-set file [open $folder_name/runtime/runtime.csv "w"]
+exec mkdir -p $run_dir/runtime/
+set file [open $run_dir/runtime/runtime.csv "w"]
 
 puts $file "init_design;create_floorplan;prects;cts;postcts;route"
 puts $file "${init_design_time};${create_floorplan_time};${prects_time};${cts_time};${postcts_time};${route_time}"

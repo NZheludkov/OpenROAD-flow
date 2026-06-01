@@ -573,6 +573,8 @@ run_dir="${output_dir}/${pdk_name}/${design}/${folder_name}"
 # Создаем директорию
 mkdir -p "$run_dir/config/"
 
+$rtl_dataset_path/$design/config.tcl
+
 #write vars to config.tcl
 cat > "$run_dir/config/config.tcl" << EOF
 set run_dir "$run_dir"
@@ -611,17 +613,35 @@ set CLK_PERIOD "$CLK_PERIOD"
 set IO_DELAY "$IO_DELAY"
 set CU "$CU"
 set AR "$AR"
-set PDN_HWIDTH "$PDN_HWIDTH_TRACK"
-set PDN_HSPACING "$PDN_HSPACING_TRACK"
-set PDN_HPITCH "$PDN_HPITCH_TRACK"
-set PDN_VWIDTH "$PDN_VWIDTH_TRACK"
-set PDN_VSPACING "$PDN_VSPACING_TRACK"
-set PDN_VPITCH "$PDN_VPITCH_TRACK"
+set PDN_HWIDTH_TRACK "$PDN_HWIDTH_TRACK"
+set PDN_HSPACING_TRACK "$PDN_HSPACING_TRACK"
+set PDN_HPITCH_TRACK "$PDN_HPITCH_TRACK"
+set PDN_VWIDTH_TRACK "$PDN_VWIDTH_TRACK"
+set PDN_VSPACING_TRACK "$PDN_VSPACING_TRACK"
+set PDN_VPITCH_TRACK "$PDN_VPITCH_TRACK"
 set MAX_TRANSITION "$MAX_TRANSITION"
 set MAX_FANOUT "$MAX_FANOUT"
 set OUT_PORT_LOAD "$OUT_PORT_LOAD"
 set INPUT_TRANSITION "$INPUT_TRANSITION"
+set liberty_time_unit "$liberty_time_unit"
+set liberty_current_unit "$liberty_current_unit"
+set liberty_voltage_unit "$liberty_voltage_unit"
+set liberty_res_unit "$liberty_res_unit"
+set liberty_cap_unit "$liberty_cap_unit"
+set ndr_type "$ndr_type"
 EOF
+
+#source design specific config
+design_config="${rtl_dataset_path}/designs/${design}/config.tcl"
+
+if [[ -f "$design_config" ]]; then
+    echo "" >> "$run_dir/config/config.tcl"                  # пустая строка для читаемости
+    echo "# Design-specific settings" >> "$run_dir/config/config.tcl"
+    cat "$design_config" >> "$run_dir/config/config.tcl"
+    echo "Добавлен дизайн-конфиг из $design_config"
+else
+    echo "Предупреждение: файл $design_config не найден, пропускаем."
+fi
 
 #export config file
 export CONFIG_FILE="$run_dir/config/config.tcl"
@@ -630,6 +650,6 @@ export CONFIG_FILE="$run_dir/config/config.tcl"
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-#openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
 
 #exit 0

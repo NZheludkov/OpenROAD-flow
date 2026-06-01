@@ -18,7 +18,7 @@ foreach lib $liberty {
 set_cmd_units -time $liberty_time_unit -capacitance $liberty_cap_unit -current $liberty_current_unit -voltage $liberty_voltage_unit -resistance $liberty_res_unit -distance um
 
 ##READ NETLIST
-read_verilog ${folder_name}/synt/netlist/${design}.v
+read_verilog ${run_dir}/synt/netlist/${design}.v
 link_design $design
 
 ##READ SDC
