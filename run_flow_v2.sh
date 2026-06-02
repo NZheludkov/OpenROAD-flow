@@ -221,10 +221,10 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     pdk_name="freepdk45"
 
     #SDC VARS
-    MAX_TRANSITION="0.3"
+    MAX_TRANSITION="0.2"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
-    INPUT_TRANSITION="0.5"
+    INPUT_TRANSITION="0.2"
 
     # =========================
     # Default flow parameters
@@ -312,10 +312,10 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     pdk_name="asap7"
 
     #SDC VARS
-    MAX_TRANSITION="100"
+    MAX_TRANSITION="320"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="100"
-    INPUT_TRANSITION="100"
+    INPUT_TRANSITION="320"
 
     # =========================
     # Default flow parameters
@@ -406,7 +406,7 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     pdk_name="sky130"
 
     #SDC VARS
-    MAX_TRANSITION="0.5"
+    MAX_TRANSITION="1.0"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
     INPUT_TRANSITION="1.0"
@@ -501,7 +501,7 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     pdk_name="gf180"
 
     #SDC VARS
-    MAX_TRANSITION="0.5"
+    MAX_TRANSITION="1.0"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
     INPUT_TRANSITION="1.0"
@@ -650,6 +650,6 @@ export CONFIG_FILE="$run_dir/config/config.tcl"
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
 
 #exit 0

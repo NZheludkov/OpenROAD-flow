@@ -71,13 +71,13 @@ vga_enh_top \
 "
 
 #PDK PATH
-pdk_path="/home/nzheludkov/phd/lambdapdk/lambdapdk/freepdk45"
+pdk_path="/home/nvgel/phd/open_pdk/lambdapdk/sky130"
 
 #RTL PATH
-rtl_path="/home/nzheludkov/phd/RTL-Dataset"
+rtl_path="/home/nvgel/phd/RTL-Dataset"
 
 #OUT DIR
-out_dir="/home/nzheludkov/phd/runs"
+out_dir="/home/nvgel/phd/runs"
 
 #run flow for choosen designs
 for design in $designs

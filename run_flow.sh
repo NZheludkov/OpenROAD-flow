@@ -580,6 +580,6 @@ export PDN_VPITCH_TRACK
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 12 ./flow_scripts/run_openroad.tcl -exit
 
 exit 0
