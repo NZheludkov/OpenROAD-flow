@@ -1,73 +1,122 @@
 #!/bin/bash
 
-#DESIGNS
-designs="\
-ac97_top \
-aes_cipher_top \
-aes_core \
-aes128_core \
-AltOR32 \
-BRSFmnCE \
-des3 \
-dmx_tx \
-dynamic_node_top_wrap \
-eth_top \
-fht \
-FIR_filter \
-fpu \
-gfx_top \
-gng \
-i2c_master_top \
-idft_top \
-IIR_filter \
-ima_adpcm_dec \
-ima_adpcm_enc \
-jpeg_encoder \
-keccak \
-lfsr \
-mc_top \
-MC6803_gen2 \
-Md5Core \
-MIPS32_Processor \
-or1200_top_cm4_top \
-pci_bridge32 \
-pcm_slv_top \
-picosoc \
-point_scalar_mult \
-RS_dec \
-rvx \
-sasc_top \
-sdrc_top \
-sha256 \
-simple_spi_top \
-spi_top \
-spiMaster \
-streamScaler \
-trigonometric \
-tv80s \
-uart_top \
-usb_phy \
-USFFT64_2B \
-vga_enh_top \
-wb_dma_top \
-wbqspiflash \
-xge_mac \
-xtea \
-"
+# =============================================================================
+# mass_run.sh – массовый запуск run_flow.sh с перебором параметров
+# =============================================================================
 
-#PDK PATH
-pdk_path="/home/nvgel/phd/open_pdk/lambdapdk/freepdk45"
+# ---------------------------- значения по умолчанию ----------------------------
+pdk_path=""
+rtl_dataset_path=""
+output_dir=""
+designs_file=""
+verbose=0
 
-#RTL PATH
-rtl_path="/home/nvgel/phd/RTL-Dataset"
+# ---------------------------- параметры перебора (жестко в скрипте) ------------
+clk_periods=("10.0" "20.0" "30.0")          # CLK_PERIOD (3 значения)
+io_delays=("0.33" "0.66")                    # IO_DELAY (2 значения)
+cus=("30" "40" "50")                         # CU (3 значения)
+ars=("0.5" "1.0" "2.0")                      # AR (3 значения)
+pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
 
-#OUT DIR
-out_dir="/home/nvgel/phd/runs"
+# ---------------------------- функции ------------------------------------------
+show_help() {
+    cat << EOF
+Использование: $0 [ОПЦИИ]
 
-#run flow for choosen designs
-for design in $designs
-do
-    echo "Processing: $design"
-    export design
-    ./run_flow.sh --pdk_path $pdk_path  --rtl_dataset_path $rtl_path  --design $design --output_dir $out_dir 
+Обязательные опции:
+    --pdk_path PATH              Путь к PDK (например, /home/user/lambdapdk/freepdk45)
+    --rtl_dataset_path PATH      Путь к RTL‑датасету
+    --output_dir DIR             Базовая директория для сохранения результатов
+    --designs_file FILE          Файл со списком имён дизайнов (по одному на строку)
+
+Дополнительные опции:
+    --verbose, -v                Подробный вывод
+    --help, -h                   Показать эту справку
+
+Пример:
+    $0 --pdk_path /home/user/open_pdk/lambdapdk/freepdk45 \\
+       --rtl_dataset_path /home/user/RTL-Dataset \\
+       --output_dir /home/user/runs \\
+       --designs_file design_list.txt
+EOF
+}
+
+# ---------------------------- парсинг аргументов -------------------------------
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --pdk_path)            pdk_path="$2"; shift 2 ;;
+        --rtl_dataset_path)    rtl_dataset_path="$2"; shift 2 ;;
+        --output_dir)          output_dir="$2"; shift 2 ;;
+        --designs_file)        designs_file="$2"; shift 2 ;;
+        --verbose|-v)          verbose=1; shift ;;
+        --help|-h)             show_help; exit 0 ;;
+        *) echo "Ошибка: Неизвестная опция $1"; show_help; exit 1 ;;
+    esac
 done
+
+# ---------------------------- проверка обязательных параметров -----------------
+if [[ -z "$pdk_path" || -z "$rtl_dataset_path" || -z "$output_dir" || -z "$designs_file" ]]; then
+    echo "Ошибка: не все обязательные параметры заданы."
+    show_help
+    exit 1
+fi
+
+if [[ ! -f "$designs_file" ]]; then
+    echo "Ошибка: файл со списком дизайнов '$designs_file' не найден."
+    exit 1
+fi
+
+# ---------------------------- чтение списка дизайнов ---------------------------
+designs=()
+while IFS= read -r line; do
+    # Удаляем ведущие/замыкающие пробелы
+    line="$(echo -e "${line}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+    # Пропускаем пустые строки и строки, начинающиеся с #
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    designs+=("$line")
+done < "$designs_file"
+
+if [[ ${#designs[@]} -eq 0 ]]; then
+    echo "Ошибка: список дизайнов пуст."
+    exit 1
+fi
+
+if [[ $verbose -eq 1 ]]; then
+    echo "=== Параметры запуска ==="
+    echo "PDK путь:            $pdk_path"
+    echo "RTL датасет:         $rtl_dataset_path"
+    echo "Базовая директория:  $output_dir"
+    echo "Файл дизайнов:       $designs_file"
+    echo "Дизайнов для запуска: ${#designs[@]}"
+    echo "========================"
+fi
+
+# ---------------------------- запуск перебора ----------------------------------
+for design in "${designs[@]}"; do
+    echo "============================================="
+    echo "Обработка дизайна: $design"
+    for clk in "${clk_periods[@]}"; do
+        for io in "${io_delays[@]}"; do
+            for cu in "${cus[@]}"; do
+                for ar in "${ars[@]}"; do
+                    for hpitch in "${pdn_hpitch_tracks[@]}"; do
+                        echo "  Запуск: CLK=$clk IO=$io CU=$cu AR=$ar HP=$hpitch"
+                        ./run_flow.sh \
+                            --pdk_path "$pdk_path" \
+                            --rtl_dataset_path "$rtl_dataset_path" \
+                            --design "$design" \
+                            --output_dir "$output_dir" \
+                            --clk_period "$clk" \
+                            --io_delay "$io" \
+                            --cu "$cu" \
+                            --ar "$ar" \
+                            --pdn_hpitch_track "$hpitch"
+                    done
+                done
+            done
+        done
+    done
+done
+
+echo "Все запуски завершены."
+exit 0
