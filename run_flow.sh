@@ -220,6 +220,12 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
 
     pdk_name="freepdk45"
 
+    #SDC VARS
+    MAX_TRANSITION="0.2"
+    MAX_FANOUT="16"
+    OUT_PORT_LOAD="0.1"
+    INPUT_TRANSITION="0.2"
+
     # =========================
     # Default flow parameters
     # =========================
@@ -304,6 +310,12 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     rc_extract_file="${pdk_path}/base/pex/openroad/typical.rules"
 
     pdk_name="asap7"
+
+    #SDC VARS
+    MAX_TRANSITION="320"
+    MAX_FANOUT="16"
+    OUT_PORT_LOAD="100"
+    INPUT_TRANSITION="320"
 
     # =========================
     # Default flow parameters
@@ -393,6 +405,13 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
 
     pdk_name="sky130"
 
+    #SDC VARS
+    MAX_TRANSITION="1.0"
+    MAX_FANOUT="16"
+    OUT_PORT_LOAD="0.1"
+    INPUT_TRANSITION="1.0"
+
+
     # =========================
     # Default flow parameters
     # =========================
@@ -481,6 +500,12 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
 
     pdk_name="gf180"
 
+    #SDC VARS
+    MAX_TRANSITION="1.0"
+    MAX_FANOUT="16"
+    OUT_PORT_LOAD="0.1"
+    INPUT_TRANSITION="1.0"
+
     # =========================
     # Default flow parameters
     # =========================
@@ -504,82 +529,127 @@ else
 fi
 
 # =========================
-# Export all variables
+# Формирование имени подпапки и создание полной директории запуска
 # =========================
+folder_name=""
 
-export pdk_path
-export rtl_dataset_path
-export design
-export output_dir
-export verbose
+if [ -n "$CLK_PERIOD" ]; then
+    folder_name+="CLK_${CLK_PERIOD}_"
+fi
+if [ -n "$IO_DELAY" ]; then
+    folder_name+="IO_${IO_DELAY}_"
+fi
+if [ -n "$CU" ]; then
+    folder_name+="CU_${CU}_"
+fi
+if [ -n "$AR" ]; then
+    folder_name+="AR_${AR}_"
+fi
+if [ -n "$PDN_HWIDTH_TRACK" ]; then
+    folder_name+="HW_${PDN_HWIDTH_TRACK}_"
+fi
+if [ -n "$PDN_HSPACING_TRACK" ]; then
+    folder_name+="HS_${PDN_HSPACING_TRACK}_"
+fi
+if [ -n "$PDN_HPITCH_TRACK" ]; then
+    folder_name+="HP_${PDN_HPITCH_TRACK}_"
+fi
+if [ -n "$PDN_VWIDTH_TRACK" ]; then
+    folder_name+="VW_${PDN_VWIDTH_TRACK}_"
+fi
+if [ -n "$PDN_VSPACING_TRACK" ]; then
+    folder_name+="VS_${PDN_VSPACING_TRACK}_"
+fi
+if [ -n "$PDN_VPITCH_TRACK" ]; then
+    folder_name+="VP_${PDN_VPITCH_TRACK}_"
+fi
 
-export tech_lef
-export cells_lef
-export lef_list
-export liberty
+# Удаляем последний символ "_"
+folder_name="${folder_name%_}"
 
-export core_site
+# Полный путь: output_dir / pdk_name / design / folder_name
+run_dir="${output_dir}/${pdk_name}/${design}/${folder_name}"
 
-export tap_cell
-export endcap_cell
-export tap_cell_distance
+# Создаем директорию
+mkdir -p "$run_dir/config/"
 
-export techmap_verilog_files
+$rtl_dataset_path/$design/config.tcl
 
-export bottom_routing_metal
-export top_routing_metal
+#write vars to config.tcl
+cat > "$run_dir/config/config.tcl" << EOF
+set run_dir "$run_dir"
+set pdk_path "$pdk_path"
+set rtl_dataset_path "$rtl_dataset_path"
+set design "$design"
+set output_dir "$output_dir"
+set pdk_name "$pdk_name"
+set tech_lef "$tech_lef"
+set cells_lef "$cells_lef"
+set lef_list [concat \$tech_lef \$cells_lef]
+set liberty "$liberty"
+set core_site "$core_site"
+set tap_cell "$tap_cell"
+set endcap_cell "$endcap_cell"
+set tap_cell_distance "$tap_cell_distance"
+set techmap_verilog_files "$techmap_verilog_files"
+set bottom_routing_metal "$bottom_routing_metal"
+set top_routing_metal "$top_routing_metal"
+set pins_hor_layers [list $pins_hor_layers]
+set pins_ver_layers [list $pins_ver_layers]
+set wire_rc_metal "$wire_rc_metal"
+set tiehi_cell "$tiehi_cell"
+set tielo_cell "$tielo_cell"
+set tiehi_cell_pin "$tiehi_cell_pin"
+set tielo_cell_pin "$tielo_cell_pin"
+set filler_cells [list $filler_cells]
+set dont_use_cells [list $dont_use_cells]
+set max_slew_cts "$max_slew_cts"
+set max_cap_cts "$max_cap_cts"
+set cts_root_buf "$cts_root_buf"
+set cts_buf_list [list $cts_buf_list]
+set process_node "$process_node"
+set rc_extract_file "$rc_extract_file"
+set CLK_PERIOD "$CLK_PERIOD"
+set IO_DELAY "$IO_DELAY"
+set CU "$CU"
+set AR "$AR"
+set PDN_HWIDTH_TRACK "$PDN_HWIDTH_TRACK"
+set PDN_HSPACING_TRACK "$PDN_HSPACING_TRACK"
+set PDN_HPITCH_TRACK "$PDN_HPITCH_TRACK"
+set PDN_VWIDTH_TRACK "$PDN_VWIDTH_TRACK"
+set PDN_VSPACING_TRACK "$PDN_VSPACING_TRACK"
+set PDN_VPITCH_TRACK "$PDN_VPITCH_TRACK"
+set MAX_TRANSITION "$MAX_TRANSITION"
+set MAX_FANOUT "$MAX_FANOUT"
+set OUT_PORT_LOAD "$OUT_PORT_LOAD"
+set INPUT_TRANSITION "$INPUT_TRANSITION"
+set liberty_time_unit "$liberty_time_unit"
+set liberty_current_unit "$liberty_current_unit"
+set liberty_voltage_unit "$liberty_voltage_unit"
+set liberty_res_unit "$liberty_res_unit"
+set liberty_cap_unit "$liberty_cap_unit"
+set ndr_type "$ndr_type"
+EOF
 
-export pins_hor_layers
-export pins_ver_layers
+#source design specific config
+design_config="${rtl_dataset_path}/designs/${design}/config.tcl"
 
-export wire_rc_metal
+if [[ -f "$design_config" ]]; then
+    echo "" >> "$run_dir/config/config.tcl"                  # пустая строка для читаемости
+    echo "# Design-specific settings" >> "$run_dir/config/config.tcl"
+    cat "$design_config" >> "$run_dir/config/config.tcl"
+    echo "Добавлен дизайн-конфиг из $design_config"
+else
+    echo "Предупреждение: файл $design_config не найден, пропускаем."
+fi
 
-export tiehi_cell
-export tielo_cell
-
-export tiehi_cell_pin
-export tielo_cell_pin
-
-export filler_cells
-export dont_use_cells
-
-export max_slew_cts
-export max_cap_cts
-
-export cts_root_buf
-export cts_buf_list
-
-export ndr_type
-
-export liberty_time_unit
-export liberty_current_unit
-export liberty_voltage_unit
-export liberty_res_unit
-export liberty_cap_unit
-
-export process_node
-
-export rc_extract_file
-
-export pdk_name
-
-export CLK_PERIOD
-export IO_DELAY
-export CU
-export AR
-
-export PDN_HWIDTH_TRACK
-export PDN_HSPACING_TRACK
-export PDN_HPITCH_TRACK
-
-export PDN_VWIDTH_TRACK
-export PDN_VSPACING_TRACK
-export PDN_VPITCH_TRACK
+#export config file
+export CONFIG_FILE="$run_dir/config/config.tcl"
 
 #run synt in yosys
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 12 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
 
-exit 0
+#exit 0
