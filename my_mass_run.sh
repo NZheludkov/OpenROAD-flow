@@ -1,77 +1,62 @@
 #!/bin/bash
 
-#source env for run openroad
-#. $HOME/OpenROAD-flow-scripts/env.sh
-
-#choose designs for run
-#usb_phy +
-#pcm_slv_top + 
-#FIR_filter + 
-#simple_spi_top +
-#sasc_top +
-#i2c_master_top +
-#ac97_top +
-#mc_top +
-#sha256 +
-#trigonometric +
-#des3 +
-#aes128_core -
-#aes_cipher_top -
-#aes_core +
-#dynamic_node_top_wrap +
-#eth_top -
-#spi_top +
-#Md5Core +
-
-#WORK
+#DESIGNS
 designs="\
 ac97_top \
+aes_cipher_top \
 aes_core \
+aes128_core \
+AltOR32 \
+BRSFmnCE \
 des3 \
+dmx_tx \
 dynamic_node_top_wrap \
+eth_top \
+fht \
 FIR_filter \
+fpu \
+gfx_top \
+gng \
 i2c_master_top \
+idft_top \
+IIR_filter \
+ima_adpcm_dec \
+ima_adpcm_enc \
+jpeg_encoder \
+keccak \
+lfsr \
 mc_top \
+MC6803_gen2 \
 Md5Core \
+MIPS32_Processor \
+or1200_top_cm4_top \
+pci_bridge32 \
 pcm_slv_top \
 picosoc \
+point_scalar_mult \
+RS_dec \
+rvx \
 sasc_top \
+sdrc_top \
 sha256 \
 simple_spi_top \
 spi_top \
+spiMaster \
+streamScaler \
 trigonometric \
 tv80s \
-usb_phy
-wb_dma_top \
-IIR_filter \
-jpeg_encoder \
-idft_top \
-gng \
-fht \
-wbqspiflash \
-point_scalar_mult \
-keccak \
-xge_mac \
-RS_dec \
-spiMaster \
 uart_top \
-dmx_tx \
-pci_bridge32 \
-xtea \
+usb_phy \
 USFFT64_2B \
-MC6803_gen2 \
-MIPS32_Processor \
-aes128_core \
-aes_cipher_top \
-sdrc_top \
-ima_adpcm_dec \
-ima_adpcm_enc \
-BRSFmnCE \
 vga_enh_top \
+wb_dma_top \
+wbqspiflash \
+xge_mac \
+xtea \
 "
 
 #PDK PATH
-pdk_path="/home/nvgel/phd/open_pdk/lambdapdk/sky130"
+pdk_path="/home/nvgel/phd/open_pdk/lambdapdk/freepdk45"
 
 #RTL PATH
 rtl_path="/home/nvgel/phd/RTL-Dataset"
@@ -84,5 +69,5 @@ for design in $designs
 do
     echo "Processing: $design"
     export design
-    ./run_flow.sh --pdk_path $pdk_path  --rtl_dataset_path $rtl_path  --design $design --output_dir $out_dir 
+    ./run_flow_v2.sh --pdk_path $pdk_path  --rtl_dataset_path $rtl_path  --design $design --output_dir $out_dir 
 done
