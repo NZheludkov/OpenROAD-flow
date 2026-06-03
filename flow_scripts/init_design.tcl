@@ -37,6 +37,9 @@ group_path -name in2out -from [all_inputs] -to [all_outputs]
 set cells_number [llength [get_cells *]]
 set nets_number [llength [get_nets *]]
 
+#get registers count
+set regs_number [llength [all_registers]]
+
 ##END TIME
 set end_time [exec date +%s]
 set init_design_time [expr $end_time - $start_time]

@@ -13,13 +13,13 @@ IO_DELAY=""
 CU=""
 AR=""
 
-PDN_HWIDTH=""
-PDN_HSPACING=""
-PDN_HPITCH=""
+PDN_HWIDTH_TRACK=""
+PDN_HSPACING_TRACK=""
+PDN_HPITCH_TRACK=""
 
-PDN_VWIDTH=""
-PDN_VSPACING=""
-PDN_VPITCH=""
+PDN_VWIDTH_TRACK=""
+PDN_VSPACING_TRACK=""
+PDN_VPITCH_TRACK=""
 
 # Функция для вывода справки
 show_help() {
@@ -650,6 +650,6 @@ export CONFIG_FILE="$run_dir/config/config.tcl"
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
+openroad -threads 6 ./flow_scripts/run_openroad.tcl -exit
 
 #exit 0
