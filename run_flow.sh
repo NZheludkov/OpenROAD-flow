@@ -650,6 +650,6 @@ export CONFIG_FILE="$run_dir/config/config.tcl"
 yosys ./flow_scripts/run_yosys.tcl
 
 #run topo in openroad
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -gui
 
 #exit 0

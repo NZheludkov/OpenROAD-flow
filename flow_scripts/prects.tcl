@@ -1,6 +1,9 @@
 ##START TIME
 set start_time [exec date +%s]
 
+##STAGE
+set flow_stage prects
+
 ##DONT USE LIST
 foreach cell $dont_use_cells {
 	set_dont_use $cell
@@ -141,16 +144,8 @@ report_checks -corner view -digits 3 -path_delay max -no_line_splits -fields {sl
 report_checks -corner view -digits 3 -path_delay max -no_line_splits -fields {slew net cap fanout} -path_group reg2out > ${run_dir}/prects/timing_reports/reg2out.txt
 report_checks -corner view -digits 3 -path_delay max -no_line_splits -fields {slew net cap fanout} -path_group in2out  > ${run_dir}/prects/timing_reports/in2out.txt
 
-##WRITE ROUTE DATA
-exec mkdir -p ${run_dir}/prects/def/
-exec mkdir -p ${run_dir}/prects/netlist/
-exec mkdir -p ${run_dir}/prects/sdc/
-exec mkdir -p ${run_dir}/prects/sdf/
-
-write_def ${run_dir}/prects/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] ${run_dir}/prects/netlist/netlist.v
-write_sdc ${run_dir}/prects/sdc/sdc.sdc
-write_sdf -digits 3 -corner view ${run_dir}/prects/sdf/sdf.sdf
+##REPORT METRICS
+source ./flow_scripts/report_metric.tcl
 
 ##END TIME
 set end_time [exec date +%s]

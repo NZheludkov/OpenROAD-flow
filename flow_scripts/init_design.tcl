@@ -1,6 +1,9 @@
 ##START TIME
 set start_time [exec date +%s]
 
+##STAGE
+set flow_stage init_design
+
 ##CREATE TIMING CORNER
 define_corners view
 

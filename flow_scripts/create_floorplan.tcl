@@ -1,6 +1,9 @@
 ##START TIME
 set start_time [exec date +%s]
 
+##STAGE
+set flow_stage create_floorplan
+
 ##CREATE FP
 initialize_floorplan -utilization $CU -core_space 1 -aspect_ratio $AR -site $core_site
 
@@ -197,16 +200,8 @@ pdngen
 ##ADD PINS
 place_pins -hor_layers $pins_hor_layers -ver_layers $pins_ver_layers -min_distance_in_tracks -min_distance 4
 
-##WRITE OUT DATA AT FP
-exec mkdir -p ${run_dir}/floorplan/def/
-exec mkdir -p ${run_dir}/floorplan/netlist/
-exec mkdir -p ${run_dir}/floorplan/sdc/
-exec mkdir -p ${run_dir}/floorplan/sdf/
-
-write_def ${run_dir}/floorplan/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] ${run_dir}/floorplan/netlist/netlist.v
-write_sdc ${run_dir}/floorplan/sdc/sdc.sdc
-write_sdf -digits 3 -corner view ${run_dir}/floorplan/sdf/sdf.sdf
+##REPORT METRICS
+source ./flow_scripts/report_metric.tcl
 
 ##END TIME
 set end_time [exec date +%s]

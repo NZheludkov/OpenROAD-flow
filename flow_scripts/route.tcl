@@ -1,6 +1,9 @@
 ##START TIME
 set start_time [exec date +%s]
 
+##STAGE
+set flow_stage route
+
 ##CREATE FOLDER FOR STAGE REPORTS
 exec mkdir -p $run_dir/route/
 
@@ -80,18 +83,8 @@ report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded
 with_output_to_variable a {report_checks -path_group reg2reg -digits 3 -format slack_only -no_line_splits}
 set wns [lindex $a 4]
 
-##WRITE ROUTE DATA
-exec mkdir -p $run_dir/route/def/
-exec mkdir -p $run_dir/route/netlist/
-exec mkdir -p $run_dir/route/sdc/
-exec mkdir -p $run_dir/route/spef/
-exec mkdir -p $run_dir/route/sdf/
-
-write_def $run_dir/route/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $run_dir/route/netlist/netlist.v
-write_sdc $run_dir/route/sdc/sdc.sdc
-write_spef $run_dir/route/spef/spef.spef
-write_sdf -digits 3 -corner view $run_dir/route/sdf/sdf.sdf
+##REPORT METRICS
+source ./flow_scripts/report_metric.tcl
 
 ##END TIME
 set end_time [exec date +%s]

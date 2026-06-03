@@ -1,6 +1,9 @@
 ##START TIME
 set start_time [exec date +%s]
 
+##STAGE
+set flow_stage poscts
+
 ##POSTCTS (FIX DRV, SETUP, HOLD)
 ##FIX SLEW,FANOUT,CAP (DRV)
 repair_design -verbose
@@ -47,16 +50,8 @@ report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded
 report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group reg2out > $run_dir/postcts/timing_reports/reg2out_hold.txt
 report_checks -corner view -digits 3 -path_delay min -format full_clock_expanded -no_line_splits -fields {slew net cap fanout} -path_group in2out  > $run_dir/postcts/timing_reports/in2out_hold.txt
 
-##WRITE ROUTE DATA
-exec mkdir -p $run_dir/postcts/def/
-exec mkdir -p $run_dir/postcts/netlist/
-exec mkdir -p $run_dir/postcts/sdc/
-exec mkdir -p $run_dir/postcts/sdf/
-
-write_def $run_dir/postcts/def/def.def
-write_verilog -remove_cells [concat $filler_cells $tap_cell $endcap_cell] $run_dir/postcts/netlist/netlist.v
-write_sdc $run_dir/postcts/sdc/sdc.sdc
-write_sdf -digits 3 -corner view $run_dir/postcts/sdf/sdf.sdf
+##REPORT METRICS
+source ./flow_scripts/report_metric.tcl
 
 ##END TIME
 set end_time [exec date +%s]
