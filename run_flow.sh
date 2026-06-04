@@ -649,7 +649,14 @@ export CONFIG_FILE="$run_dir/config/config.tcl"
 #run synt in yosys
 yosys ./flow_scripts/run_yosys.tcl
 
+#create dir for openroad log
+mkdir -p "$run_dir/log/"
+
+#create dir for openroad metrics
+mkdir -p "$run_dir/openroad_metrics/"
+
 #run topo in openroad
-openroad -threads 6 ./flow_scripts/run_openroad.tcl -exit
+
+openroad -threads 6 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/log.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
 
 #exit 0
