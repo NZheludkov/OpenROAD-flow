@@ -11,7 +11,7 @@ source ./flow_scripts/procs.tcl
 source ./flow_scripts/init_design.tcl
 
 #create floorplan
-source ./flow_scripts/create_floorplan.tcl
+source ./flow_scripts/floorplan.tcl
 
 #prects 
 source ./flow_scripts/prects.tcl

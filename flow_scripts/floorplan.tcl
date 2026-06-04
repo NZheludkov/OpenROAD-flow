@@ -2,7 +2,7 @@
 set start_time [exec date +%s]
 
 ##STAGE
-set flow_stage create_floorplan
+set flow_stage floorplan
 
 ##CREATE FP
 initialize_floorplan -utilization $CU -core_space 1 -aspect_ratio $AR -site $core_site
@@ -205,4 +205,4 @@ source ./flow_scripts/report_metric.tcl
 
 ##END TIME
 set end_time [exec date +%s]
-set create_floorplan_time [expr $end_time - $start_time]
+set floorplan_time [expr $end_time - $start_time]
