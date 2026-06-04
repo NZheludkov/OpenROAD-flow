@@ -110,7 +110,7 @@ close $file
 ##WRITE RUN META INFO
 set file [open $run_dir/run_info.csv "w"]
 
-puts $file "design;pdk_name;CLK_PERIOD;IO_DELAY;CU;AR;PDN_HWIDTH_TRACK;PDN_HSPACING_TRACK;PDN_HPITCH_TRACK;PDN_VWIDTH_TRACK;PDN_VSPACING_TRACK;PDN_VPITCH_TRACK;cells_number;nets_number;regs_number;init_design_time;create_floorplan_time;prects_time;cts_time;postcts_time;route_time;wns;total_power;design_area"
-puts $file "$design;$pdk_name;$CLK_PERIOD;$IO_DELAY;$CU;$AR;$PDN_HWIDTH_TRACK;$PDN_HSPACING_TRACK;$PDN_HPITCH_TRACK;$PDN_VWIDTH_TRACK;$PDN_VSPACING_TRACK;$PDN_VPITCH_TRACK;$cells_number;$nets_number;$regs_number;${init_design_time};${create_floorplan_time};${prects_time};${cts_time};${postcts_time};${route_time};$wns;$total_power;$design_area"
+puts $file "design;pdk_name;CLK_PERIOD;IO_DELAY;CU;AR;PDN_HWIDTH_TRACK;PDN_HSPACING_TRACK;PDN_HPITCH_TRACK;PDN_VWIDTH_TRACK;PDN_VSPACING_TRACK;PDN_VPITCH_TRACK;cells_number;nets_number;regs_number;yosys_time;init_design_time;create_floorplan_time;prects_time;cts_time;postcts_time;route_time;wns;total_power;design_area"
+puts $file "$design;$pdk_name;$CLK_PERIOD;$IO_DELAY;$CU;$AR;$PDN_HWIDTH_TRACK;$PDN_HSPACING_TRACK;$PDN_HPITCH_TRACK;$PDN_VWIDTH_TRACK;$PDN_VSPACING_TRACK;$PDN_VPITCH_TRACK;$cells_number;$nets_number;$regs_number;${yosys_time};${init_design_time};${create_floorplan_time};${prects_time};${cts_time};${postcts_time};${route_time};$wns;$total_power;$design_area"
 
 close $file

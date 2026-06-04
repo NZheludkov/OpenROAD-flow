@@ -1,3 +1,6 @@
+#ysoys runtime
+set yosys_time $::env(yosys_time)
+
 #source config file
 source $::env(CONFIG_FILE)
 

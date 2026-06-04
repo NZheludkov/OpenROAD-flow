@@ -646,8 +646,13 @@ fi
 #export config file
 export CONFIG_FILE="$run_dir/config/config.tcl"
 
+#create dir for yosys log
+mkdir -p "$run_dir/log/"
+
 #run synt in yosys
-yosys ./flow_scripts/run_yosys.tcl
+SECONDS=0
+yosys ./flow_scripts/run_yosys.tcl -l "$run_dir/log/yosys_log.txt"
+yosys_time=$SECONDS; export yosys_time
 
 #create dir for openroad log
 mkdir -p "$run_dir/log/"
@@ -657,6 +662,6 @@ mkdir -p "$run_dir/openroad_metrics/"
 
 #run topo in openroad
 
-openroad -threads 6 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/log.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
+openroad -threads 6 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/openroad_logs.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
 
 #exit 0
