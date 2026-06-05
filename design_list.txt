@@ -20,7 +20,6 @@
 #ima_adpcm_enc
 #jpeg_encoder
 #keccak
-#lfsr too small
 #mc_top
 #MC6803_gen2
 #Md5Core
