@@ -2,7 +2,7 @@
 set start_time [exec date +%s]
 
 ##STAGE
-set flow_stage poscts
+set flow_stage postcts
 
 ##POSTCTS (FIX DRV, SETUP, HOLD)
 ##FIX SLEW,FANOUT,CAP (DRV)
