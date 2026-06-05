@@ -13,7 +13,7 @@
 #fpu
 #gfx_top
 #gng
-i2c_master_top
+#i2c_master_top
 #idft_top
 #IIR_filter
 #ima_adpcm_dec
@@ -42,7 +42,7 @@ i2c_master_top
 #trigonometric
 #tv80s
 #uart_top
-#usb_phy 108
+usb_phy
 #USFFT64_2B
 #vga_enh_top
 #wb_dma_top

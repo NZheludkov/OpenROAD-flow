@@ -9,14 +9,15 @@ pdk_path=""
 rtl_dataset_path=""
 output_dir=""
 designs_file=""
+max_parallel=4
 verbose=0
 
 # ---------------------------- параметры перебора (жестко в скрипте) ------------
-clk_periods=("0.40" "0.45" "0.50")          # CLK_PERIOD (3 значения)
-io_delays=("0.33" "0.66")                    # IO_DELAY (2 значения)
-cus=("20" "30" "40")                         # CU (3 значения)
-ars=("0.5" "1.0" "2.0")                      # AR (3 значения)
+clk_periods=("0.3" "0.4")          # CLK_PERIOD (2 значения)
+cus=("30" "40")                         # CU (2 значения)
+ars=("0.5" "1.0")                      # AR (2 значения)
 pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
+pdn_vpitch_tracks=("32" "64")                # PDN_VPITCH_TRACK (2 значения)
 
 # ---------------------------- функции ------------------------------------------
 show_help() {
@@ -91,32 +92,31 @@ if [[ $verbose -eq 1 ]]; then
     echo "========================"
 fi
 
-# ---------------------------- запуск перебора ----------------------------------
+# ---------- запуск с контролем параллелизма ----------
+active=0
 for design in "${designs[@]}"; do
-    echo "============================================="
-    echo "Обработка дизайна: $design"
     for clk in "${clk_periods[@]}"; do
-        for io in "${io_delays[@]}"; do
-            for cu in "${cus[@]}"; do
-                for ar in "${ars[@]}"; do
-                    for hpitch in "${pdn_hpitch_tracks[@]}"; do
-                        echo "  Запуск: CLK=$clk IO=$io CU=$cu AR=$ar HP=$hpitch"
+        for cu in "${cus[@]}"; do
+            for ar in "${ars[@]}"; do
+                for hpitch in "${pdn_hpitch_tracks[@]}"; do
+                    for vpitch in "${pdn_vpitch_tracks[@]}"; do
+                        ((active >= max_parallel)) && { wait -n; ((active--)); }
                         ./run_flow.sh \
                             --pdk_path "$pdk_path" \
                             --rtl_dataset_path "$rtl_dataset_path" \
                             --design "$design" \
                             --output_dir "$output_dir" \
                             --clk_period "$clk" \
-                            --io_delay "$io" \
                             --cu "$cu" \
                             --ar "$ar" \
-                            --pdn_hpitch_track "$hpitch"
+                            --pdn_hpitch_track "$hpitch" \
+                            --pdn_vpitch_track "$vpitch" &
+                        ((active++))
                     done
                 done
             done
         done
     done
 done
-
+wait
 echo "Все запуски завершены."
-exit 0
