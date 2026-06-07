@@ -9,15 +9,21 @@ pdk_path=""
 rtl_dataset_path=""
 output_dir=""
 designs_file=""
-max_parallel=6
+max_parallel=4
 verbose=0
 
 # ---------------------------- параметры перебора (жестко в скрипте) ------------
-clk_periods=("1.0" "1.33")          # CLK_PERIOD (2 значения)
-cus=("30" "40")                         # CU (2 значения)
-ars=("0.5" "1.0")                      # AR (2 значения)
-pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
-pdn_vpitch_tracks=("32" "64")                # PDN_VPITCH_TRACK (2 значения)
+#clk_periods=("10.0" "15.0")          # CLK_PERIOD (2 значения)
+#cus=("30" "40")                         # CU (2 значения)
+#ars=("0.5" "1.0")                      # AR (2 значения)
+#pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
+#pdn_vpitch_tracks=("32" "64")                # PDN_VPITCH_TRACK (2 значения)
+
+clk_periods=("10.0")          # CLK_PERIOD (2 значения)
+cus=("30")                         # CU (2 значения)
+ars=("0.5")                      # AR (2 значения)
+pdn_hpitch_tracks=("32")                # PDN_HPITCH_TRACK (2 значения)
+pdn_vpitch_tracks=("32")                # PDN_VPITCH_TRACK (2 значения)
 
 # ---------------------------- функции ------------------------------------------
 show_help() {

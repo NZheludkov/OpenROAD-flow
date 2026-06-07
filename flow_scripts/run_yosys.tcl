@@ -178,12 +178,10 @@ dfflibmap -liberty $liberty
 # ============================================================
 # Technology mapping with ABC
 # ============================================================
-# IMPORTANT:
-# Use legacy ABC instead of abc9/abc_new for ASAP7 stability.
 
 puts "\n=== Standard Cell Mapping ==="
 
-abc -liberty $liberty
+abc -liberty $liberty -D 100 -constr $constraint_file
 
 # ============================================================
 # Final checks

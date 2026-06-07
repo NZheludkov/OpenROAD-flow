@@ -206,6 +206,10 @@ if [[ "$pdk_path" =~ freepdk45 ]]; then
     cts_root_buf="CLKBUF_X3"
     cts_buf_list="CLKBUF_X1 CLKBUF_X2 CLKBUF_X3"
 
+    delay_constraint_synt="100" ## ps
+    driving_cell="BUF_X2"
+    output_load_synt="100" ## fF
+
     process_node="45"
 
     liberty_time_unit="ns"
@@ -296,6 +300,10 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     CKINVDCx12_ASAP7_75t_L \
     CKINVDCx10_ASAP7_75t_L \
     "
+
+    delay_constraint_synt="50" ## ps
+    driving_cell="BUFx2_ASAP7_75t_L"
+    output_load_synt="100" ## fF
 
     process_node="7"
 
@@ -391,6 +399,10 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     sky130_fd_sc_hd__clkinv_2 \
     "
 
+    delay_constraint_synt="100" ## ps
+    driving_cell="sky130_fd_sc_hd__buf_2"
+    output_load_synt="100" ## fF
+
     process_node="130"
 
     liberty_time_unit="ns"
@@ -406,7 +418,7 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     pdk_name="sky130"
 
     #SDC VARS
-    MAX_TRANSITION="1.0"
+    MAX_TRANSITION="2.0"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
     INPUT_TRANSITION="1.0"
@@ -485,6 +497,10 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     gf180mcu_fd_sc_mcu9t5v0__clkinv_4 \
     gf180mcu_fd_sc_mcu9t5v0__clkinv_8 \
     gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
+
+    delay_constraint_synt="100" ## ps
+    driving_cell="gf180mcu_fd_sc_mcu9t5v0__buf_2"
+    output_load_synt="100" ## fF
 
     process_node="180"
 
@@ -575,6 +591,14 @@ mkdir -p "$run_dir/config/"
 
 $rtl_dataset_path/$design/config.tcl
 
+#create constraint file for abc/yosys
+mkdir -p "$run_dir/synt/"
+constraint_file="$run_dir/synt/constraint.tcl"
+cat > "$constraint_file" << EOF
+set_driving_cell $driving_cell
+set_load $output_load_synt
+EOF
+
 #write vars to config.tcl
 cat > "$run_dir/config/config.tcl" << EOF
 set run_dir "$run_dir"
@@ -629,6 +653,10 @@ set liberty_voltage_unit "$liberty_voltage_unit"
 set liberty_res_unit "$liberty_res_unit"
 set liberty_cap_unit "$liberty_cap_unit"
 set ndr_type "$ndr_type"
+set driving_cell "$driving_cell"
+set delay_constraint_synt "$delay_constraint_synt"
+set output_load_synt "$output_load_synt"
+set constraint_file "$constraint_file"
 EOF
 
 #source design specific config
@@ -662,6 +690,6 @@ mkdir -p "$run_dir/openroad_metrics/"
 
 #run topo in openroad
 
-openroad -threads 4 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/openroad_logs.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
+#openroad -threads 4 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/openroad_logs.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
 
 #exit 0
