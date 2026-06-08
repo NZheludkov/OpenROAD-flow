@@ -690,6 +690,6 @@ mkdir -p "$run_dir/openroad_metrics/"
 
 #run topo in openroad
 
-#openroad -threads 4 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/openroad_logs.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
+openroad -threads 4 ./flow_scripts/run_openroad.tcl -log "$run_dir/log/openroad_logs.txt" -metrics "$run_dir/openroad_metrics/openroad_metrics" -exit
 
 #exit 0

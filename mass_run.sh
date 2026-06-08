@@ -19,11 +19,11 @@ verbose=0
 #pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
 #pdn_vpitch_tracks=("32" "64")                # PDN_VPITCH_TRACK (2 значения)
 
-clk_periods=("10.0")          # CLK_PERIOD (2 значения)
-cus=("30")                         # CU (2 значения)
-ars=("0.5")                      # AR (2 значения)
-pdn_hpitch_tracks=("32")                # PDN_HPITCH_TRACK (2 значения)
-pdn_vpitch_tracks=("32")                # PDN_VPITCH_TRACK (2 значения)
+default_clk_periods=("10.0")          # CLK_PERIOD (2 значения)
+cus=("20" "30")                         # CU (2 значения)
+ars=("0.5" "1.0")                      # AR (2 значения)
+pdn_hpitch_tracks=("32" "64")                # PDN_HPITCH_TRACK (2 значения)
+#pdn_vpitch_tracks=("32")                # PDN_VPITCH_TRACK (2 значения)
 
 # ---------------------------- функции ------------------------------------------
 show_help() {
@@ -47,6 +47,7 @@ show_help() {
        --designs_file design_list.txt
 EOF
 }
+
 
 # ---------------------------- парсинг аргументов -------------------------------
 while [[ $# -gt 0 ]]; do
@@ -73,39 +74,52 @@ if [[ ! -f "$designs_file" ]]; then
     exit 1
 fi
 
-# ---------------------------- чтение списка дизайнов ---------------------------
-designs=()
+# ---------------------------- чтение дизайнов с периодами -----------------------
+declare -A design_periods   # ассоциативный массив: ключ=имя дизайна, значение=строка с периодами через пробел
+designs_order=()            # сохраняем порядок для удобства
+
 while IFS= read -r line; do
-    # Удаляем ведущие/замыкающие пробелы
-    line="$(echo -e "${line}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-    # Пропускаем пустые строки и строки, начинающиеся с #
+    # очистка от лишних пробелов
+    line="$(echo "$line" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
     [[ -z "$line" || "$line" == \#* ]] && continue
-    designs+=("$line")
+
+    # Разбиваем строку на слова
+    read -ra words <<< "$line"
+    design="${words[0]}"
+    # Всё, что после первого слова – это периоды (если есть)
+    if [ ${#words[@]} -gt 1 ]; then
+        periods="${words[@]:1}"          # строка из всех периодов
+    else
+        periods=""                       # пусто => использовать глобальный массив
+    fi
+
+    designs_order+=("$design")
+    design_periods["$design"]="$periods"
 done < "$designs_file"
 
-if [[ ${#designs[@]} -eq 0 ]]; then
+if [ ${#designs_order[@]} -eq 0 ]; then
     echo "Ошибка: список дизайнов пуст."
     exit 1
 fi
 
-if [[ $verbose -eq 1 ]]; then
-    echo "=== Параметры запуска ==="
-    echo "PDK путь:            $pdk_path"
-    echo "RTL датасет:         $rtl_dataset_path"
-    echo "Базовая директория:  $output_dir"
-    echo "Файл дизайнов:       $designs_file"
-    echo "Дизайнов для запуска: ${#designs[@]}"
-    echo "========================"
-fi
-
-# ---------- запуск с контролем параллелизма ----------
+# ---------------------------- запуск с контролем параллелизма --------------------
 active=0
-for design in "${designs[@]}"; do
-    for clk in "${clk_periods[@]}"; do
+for design in "${designs_order[@]}"; do
+    # Определяем список периодов для текущего дизайна
+    periods_str="${design_periods[$design]}"
+    if [ -n "$periods_str" ]; then
+        # Превращаем строку в массив
+        read -ra design_clk_periods <<< "$periods_str"
+    else
+        # Используем глобальный массив по умолчанию
+        design_clk_periods=("${default_clk_periods[@]}")
+    fi
+
+    # Теперь для каждого периода запускаем перебор остальных параметров
+    for clk in "${design_clk_periods[@]}"; do
         for cu in "${cus[@]}"; do
             for ar in "${ars[@]}"; do
                 for hpitch in "${pdn_hpitch_tracks[@]}"; do
-                    for vpitch in "${pdn_vpitch_tracks[@]}"; do
                         ((active >= max_parallel)) && { wait -n; ((active--)); }
                         ./run_flow.sh \
                             --pdk_path "$pdk_path" \
@@ -116,7 +130,7 @@ for design in "${designs[@]}"; do
                             --cu "$cu" \
                             --ar "$ar" \
                             --pdn_hpitch_track "$hpitch" \
-                            --pdn_vpitch_track "$vpitch" &
+                            --pdn_vpitch_track "$hpitch" &
                         ((active++))
                     done
                 done
