@@ -56,6 +56,7 @@ while [[ $# -gt 0 ]]; do
         --rtl_dataset_path)    rtl_dataset_path="$2"; shift 2 ;;
         --output_dir)          output_dir="$2"; shift 2 ;;
         --designs_file)        designs_file="$2"; shift 2 ;;
+        --max_parallel)        max_parallel="$2"; shift 2 ;;        
         --verbose|-v)          verbose=1; shift ;;
         --help|-h)             show_help; exit 0 ;;
         *) echo "Ошибка: Неизвестная опция $1"; show_help; exit 1 ;;
