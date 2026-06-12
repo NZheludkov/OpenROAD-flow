@@ -176,12 +176,21 @@ puts "\n=== DFF Mapping ==="
 dfflibmap -liberty $liberty
 
 # ============================================================
+# Simplemap to remove coarse-grain cells as $not etc
+# ============================================================
+
+puts "\n=== Simplemap ==="
+
+simplemap
+opt_clean
+
+# ============================================================
 # Technology mapping with ABC
 # ============================================================
 
 puts "\n=== Standard Cell Mapping ==="
 
-abc -liberty $liberty -D 100 -constr $constraint_file
+abc -liberty $liberty -D $delay_constraint_synt -constr $constraint_file
 
 # ============================================================
 # Final checks

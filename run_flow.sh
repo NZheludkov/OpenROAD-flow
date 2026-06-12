@@ -487,8 +487,8 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     gf180mcu_fd_sc_mcu9t5v0__lat* \
     gf180mcu_fd_sc_mcu9t5v0__tie*"
 
-    max_slew_cts="0.5"
-    max_cap_cts="0.3"
+    max_slew_cts="1.0"
+    max_cap_cts="0.5"
 
     cts_root_buf="gf180mcu_fd_sc_mcu9t5v0__clkinv_16"
 
@@ -517,10 +517,10 @@ elif [[ "$pdk_path" =~ gf180 ]]; then
     pdk_name="gf180"
 
     #SDC VARS
-    MAX_TRANSITION="1.0"
+    MAX_TRANSITION="2.0"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
-    INPUT_TRANSITION="1.0"
+    INPUT_TRANSITION="0.1"
 
     # =========================
     # Default flow parameters
