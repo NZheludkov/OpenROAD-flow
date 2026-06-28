@@ -323,7 +323,7 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     MAX_TRANSITION="320"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="100"
-    INPUT_TRANSITION="320"
+    INPUT_TRANSITION="10"
 
     # =========================
     # Default flow parameters
@@ -334,12 +334,12 @@ elif [[ "$pdk_path" =~ asap7 ]]; then
     : ${CU:=30}
     : ${AR:=1.0}
 
-    : ${PDN_HWIDTH_TRACK:=4}
-    : ${PDN_HSPACING_TRACK:=4}
+    : ${PDN_HWIDTH_TRACK:=4.5}
+    : ${PDN_HSPACING_TRACK:=4.5}
     : ${PDN_HPITCH_TRACK:=32}
 
-    : ${PDN_VWIDTH_TRACK:=4}
-    : ${PDN_VSPACING_TRACK:=4}
+    : ${PDN_VWIDTH_TRACK:=4.5}
+    : ${PDN_VSPACING_TRACK:=4.5}
     : ${PDN_VPITCH_TRACK:=32}
 
 elif [[ "$pdk_path" =~ sky130 ]]; then
@@ -418,10 +418,10 @@ elif [[ "$pdk_path" =~ sky130 ]]; then
     pdk_name="sky130"
 
     #SDC VARS
-    MAX_TRANSITION="2.0"
+    MAX_TRANSITION="3.0"
     MAX_FANOUT="16"
     OUT_PORT_LOAD="0.1"
-    INPUT_TRANSITION="1.0"
+    INPUT_TRANSITION="0.1"
 
 
     # =========================
