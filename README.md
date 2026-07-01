@@ -623,8 +623,4 @@ After completion, the generated raw dataset will be available in:
 
 ## Citation
 
-If you use this flow or the generated dataset in academic work, please cite the corresponding repository and dataset paper when available.
-
 ## License
-
-Specify the repository license here.
