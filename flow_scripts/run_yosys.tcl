@@ -25,12 +25,18 @@ read_liberty \
 
 puts "\n=== Reading RTL ==="
 
-set rtl_list [glob $rtl_dataset_path/designs/$design/rtl/*.v]
+set rtl_list [glob -nocomplain $rtl_dataset_path/designs/$design/rtl/*.v]
+set sv_rtl_list [glob -nocomplain $rtl_dataset_path/designs/$design/rtl/*.sv]
 
 foreach rtl $rtl_list {
     puts "Reading: $rtl"
     read_verilog $rtl
-}
+} 
+
+foreach rtl $sv_rtl_list {
+    puts "Reading: $rtl"
+    read_verilog -sv $rtl
+} 
 
 # ============================================================
 # Design elaboration
